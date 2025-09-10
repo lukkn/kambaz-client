@@ -1,3 +1,7 @@
+/**
+ * Table of Contents component for the Labs section.
+ */
+
 import Link from "next/link";
 export default function TOC() {
   return (
