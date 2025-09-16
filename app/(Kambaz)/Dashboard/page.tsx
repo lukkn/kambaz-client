@@ -8,18 +8,90 @@ export default function Dashboard() {
       <div id="wd-dashboard-courses">
         <div className="wd-dashboard-course">
           <Link href="/Courses/1234" className="wd-dashboard-course-link">
-            <Image src="/images/reactjs.jpg" alt="react" width={200} height={150} />
+            <Image src="/images/dolphin.jpg" alt="react" width={200} height={150} />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> MR501</h5>
               <p className="wd-dashboard-course-title">
-                Full Stack software developer{" "}
+                Distribution of Dolphins {" "}
               </p>
               <button> Go </button>
             </div>
           </Link>
         </div>
-        <div className="wd-dashboard-course"> ... </div>
-        <div className="wd-dashboard-course"> ... </div>
+        <div className="wd-dashboard-course">
+          <Link href="/Courses/1234" className="wd-dashboard-course-link">
+            <Image src="/images/pufferfish.jpg" alt="react" width={200} height={150} />
+            <div>
+              <h5> MR502</h5>
+              <p className="wd-dashboard-course-title">
+                Biology of Pufferfishes {" "}
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
+        <div className="wd-dashboard-course">
+          <Link href="/Courses/1234" className="wd-dashboard-course-link">
+            <Image src="/images/seal.jpg" alt="react" width={200} height={150} />
+            <div>
+              <h5> MR503</h5>
+              <p className="wd-dashboard-course-title">
+                Anatomy of Seals {" "}
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
+        <div className="wd-dashboard-course">
+          <Link href="/Courses/1234" className="wd-dashboard-course-link">
+            <Image src="/images/shark.jpg" alt="react" width={200} height={150} />
+            <div>
+              <h5> MR504</h5>
+              <p className="wd-dashboard-course-title">
+                Evolution of Sharks {" "}
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
+        <div className="wd-dashboard-course">
+          <Link href="/Courses/1234" className="wd-dashboard-course-link">
+            <Image src="/images/starfish.jpg" alt="react" width={200} height={150} />
+            <div>
+              <h5> MR505</h5>
+              <p className="wd-dashboard-course-title">
+                Ecology of Starfishes {" "}
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
+        <div className="wd-dashboard-course">
+          <Link href="/Courses/1234" className="wd-dashboard-course-link">
+            <Image src="/images/stingray.jpg" alt="react" width={200} height={150} />
+            <div>
+              <h5> MR506</h5>
+              <p className="wd-dashboard-course-title">
+                Diversity of Stingrays {" "}
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
+        <div className="wd-dashboard-course">
+          <Link href="/Courses/1234" className="wd-dashboard-course-link">
+            <Image src="/images/turtle.jpg" alt="react" width={200} height={150} />
+            <div>
+              <h5> MR507</h5>
+              <p className="wd-dashboard-course-title">
+                Diet of Sea Turtles {" "}
+              </p>
+              <button> Go </button>
+            </div>
+          </Link>
+        </div>
+
       </div>
     </div>
-);}
+  );
+}
