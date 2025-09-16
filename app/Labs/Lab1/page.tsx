@@ -173,6 +173,10 @@ export default function Lab1() {
                         Hello World!
                     </button>
 
+                    <h5 id="wd-upload">File Upload</h5>
+                    <input type="file" id="wd-file-upload" />
+
+        
                     <h5 id="wd-radio-buttons">Radio buttons</h5>
                     <label>Favorite movie genre:</label><br />
                     <input type="radio" name="radio-genre" id="wd-radio-comedy" />
