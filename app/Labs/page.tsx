@@ -17,7 +17,10 @@ export default function Labs() {
             Lab 3: JavaScript Fundamentals </Link>
         </li>
       </ul>
-      <p><b>Name:</b> Karen Lu</p>
+      <div id="wd-author">
+        <p><b>Name:</b> Karen Lu</p>
+        <p><b>Section:</b> 05</p>
+      </div>
     </div>
   );
 }
