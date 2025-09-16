@@ -26,6 +26,10 @@ export default function TOC() {
         <Link href="/" id="wd-lab3-link">
           Kambaz </Link>
       </li>
+      <li>
+        <Link href="https://github.com/lukkn/kambaz-cs5610" id="wd-github">
+          Github</Link>
+      </li>
     </ul>
   );
 }
