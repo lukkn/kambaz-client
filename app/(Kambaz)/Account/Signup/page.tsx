@@ -3,10 +3,9 @@ export default function Signup() {
   return (
     <div id="wd-signup-screen">
       <h3>Sign up</h3>
-      <input placeholder="username" className="wd-username" /><br/>
-      <input placeholder="password" type="password" className="wd-password" /><br/>
-      <input placeholder="verify password"
-             type="password" className="wd-password-verify" /><br/>
+      <input placeholder="username" defaultValue="defaultUser" className="wd-username" /><br/>
+      <input placeholder="password" defaultValue="defaultPassword" type="password" className="wd-password" /><br/>
+      <input placeholder="verify password" defaultValue="defaultPassword" type="password" className="wd-password-verify" /><br/>
       <button><Link  href="Profile" > Sign up </Link></button><br />
       <Link  href="Signin" > Sign in </Link>
     </div>
