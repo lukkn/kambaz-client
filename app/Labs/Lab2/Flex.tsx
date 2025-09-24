@@ -7,8 +7,7 @@ export default function Flex() {
                     Column 1</div>
                 <div className="wd-bg-color-blue">
                     Column 2</div>
-                <div className="wd-bg-color-red
-                    wd-flex-grow-1">
+                <div className="wd-bg-color-red wd-flex-grow-1">
                     Column 3</div>
             </div>
         </div>

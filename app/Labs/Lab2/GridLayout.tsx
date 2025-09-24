@@ -11,7 +11,7 @@ export default function GridLayout() {
                 </div>
             </div>
             <div id="wd-css-left-third-right-two-thirds" className="wd-grid-row">
-                <div className="wd-grid-col-third-page wd-bg-color-greenwd-fg-color-white">
+                <div className="wd-grid-col-third-page wd-bg-color-green wd-fg-color-white">
                     <h3>Left third</h3>    </div>
                 <div className="wd-grid-col-two-thirds-page wd-bg-color-red wd-fg-color-white">
                     <h3>Right two thirds</h3>    </div>
