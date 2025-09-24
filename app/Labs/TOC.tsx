@@ -2,34 +2,28 @@
  * Table of Contents component for the Labs section.
  */
 
+import { Nav, NavItem, NavLink } from "react-bootstrap";
 import Link from "next/link";
 export default function TOC() {
-  return (
-    <ul>
-      <li>
-        <Link href="/Labs" id="wd-lab1-link">
-          Home </Link>
-      </li>
-      <li>
-        <Link href="/Labs/Lab1" id="wd-lab1-link">
-          Lab 1 </Link>
-      </li>
-      <li>
-        <Link href="/Labs/Lab2" id="wd-lab2-link">
-          Lab 2 </Link>
-      </li>
-      <li>
-        <Link href="/Labs/Lab3" id="wd-lab3-link">
-          Lab 3 </Link>
-      </li>
-      <li>
-        <Link href="/" id="wd-lab3-link">
-          Kambaz </Link>
-      </li>
-      <li>
-        <Link href="https://github.com/lukkn/kambaz-cs5610" id="wd-github">
-          Github</Link>
-      </li>
-    </ul>
-  );
-}
+ return (
+   <Nav variant="pills">
+     <NavItem>
+       <NavLink id="wd-labs-link" href="/Labs" as={Link}>Labs</NavLink>
+     </NavItem>
+     <NavItem>
+       <NavLink id="wd-lab1-link" href="/Labs/Lab1" as={Link}>Lab 1</NavLink>
+     </NavItem>
+     <NavItem>
+       <NavLink id="wd-lab-link" href="/Labs/Lab2" as={Link}>Lab 2</NavLink>
+     </NavItem>
+     <NavItem>
+       <NavLink id="wd-lab3-link" href="/Labs/Lab3" as={Link}>Lab 3</NavLink>
+     </NavItem>
+     <NavItem>
+       <NavLink id="wd-kambaz-link" href="/" as={Link}>Kambaz</NavLink>
+     </NavItem>
+     <NavItem>
+       <NavLink id="wd-github" href="https://github.com/lukkn/kambaz-cs5610">GitHub</NavLink>
+     </NavItem>
+   </Nav>
+);}
