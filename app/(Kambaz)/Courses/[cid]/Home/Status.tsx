@@ -2,16 +2,16 @@ import { AiOutlineHome, AiOutlineStop } from "react-icons/ai";
 import { FaChartSimple, FaCircleCheck, FaRegBell } from "react-icons/fa6";
 import { GrAnnounce } from "react-icons/gr";
 import { LuImport } from "react-icons/lu";
-import { TbFileImport } from "react-icons/tb";
-import { text } from "stream/consumers";
+import { TbFileImport } from "react-icons/tb"
+import { Button } from "react-bootstrap";
 
 export default function CourseStatus() {
     return (
         <div id="wd-course-status" className="d-flex flex-column gap-2 py-4">
             <h3>Course Status</h3>
-            <div className="d-flex gap-2 my-2">
-                <button className="btn btn-secondary d-flex gap-2 align-items-center"><AiOutlineStop/> Unpublish</button>
-                <button className="btn btn-success d-flex gap-2 align-items-center"><FaCircleCheck /> Publish</button>
+            <div className="d-flex gap-2 mb-2">
+                <Button variant="secondary" className="d-flex gap-2 align-items-center"><AiOutlineStop/> Unpublish</Button>
+                <Button variant="success" className="d-flex gap-2 align-items-center"><FaCircleCheck /> Publish</Button>
             </div>
             <StatusButton icon={<LuImport />} text="Import Existing Content" />
             <StatusButton icon={<TbFileImport />} text="Import from Commons" />
@@ -30,8 +30,8 @@ interface StatusButtonProps {
 
 function StatusButton({ icon, text }: StatusButtonProps) {
     return (
-        <button className="btn btn-secondary d-flex justify-content-start align-items-center gap-2 overflow-hidden text-truncate">
+        <Button variant="secondary" className="d-flex justify-content-start align-items-center gap-2 overflow-hidden text-truncate">
             {icon} {text}
-        </button>
+        </Button>
     )
 }

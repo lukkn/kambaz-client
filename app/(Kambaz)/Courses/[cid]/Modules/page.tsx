@@ -1,7 +1,9 @@
 import { FiChevronDown, FiPlus } from "react-icons/fi";
 import { FaCircleCheck } from "react-icons/fa6";
-import Module from "./Module";
 import { ListGroup } from "react-bootstrap";
+
+import Module from "./Module";
+import ModulesControls from "./ModulesControls";
 
 export default function Modules() {
     const modules = [
@@ -10,13 +12,8 @@ export default function Modules() {
         { id: 3, title: "Week 3", lessons: ["Intro to Javascript", "Understanding Variables"] },
     ];
     return (
-        <div className="p-4">
-            <div id="wd-modules-buttons" className="d-flex justify-content-end gap-2 pb-4">
-                <button className="btn btn-secondary">Collapse All</button>
-                <button className="btn btn-secondary">View Progress</button>
-                <button className="btn btn-secondary"><FaCircleCheck fill="green" stroke="white" /> Publish All <FiChevronDown /></button>
-                <button className="btn btn-danger"><FiPlus /> Module</button>
-            </div>
+        <div className="p-4 d-flex flex-column gap-3">
+            <ModulesControls />
 
             <ListGroup id="wd-modules">
                 {modules.map((module) => (
