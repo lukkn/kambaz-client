@@ -1,7 +1,7 @@
 import { Card, CardBody, CardImg, CardText, CardTitle, Row, Col } from "react-bootstrap";
 import Link from "next/link";
 
-export default function CourseCard({ course }: { course: any }) {
+export default function CourseCard({ course }: { course: { code: string, title: string, description: string, image: string } }) {
     return (
 
         <Col className="wd-dashboard-course" style={{ width: "270px" }}>

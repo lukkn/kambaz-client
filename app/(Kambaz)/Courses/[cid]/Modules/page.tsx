@@ -1,51 +1,28 @@
+import { FiChevronDown, FiPlus } from "react-icons/fi";
+import { FaCircleCheck } from "react-icons/fa6";
+import Module from "./Module";
+import { ListGroup } from "react-bootstrap";
+
 export default function Modules() {
+    const modules = [
+        { id: 1, title: "Week 1", lessons: ["Intro to Web Development", "Setting up your environment"] },
+        { id: 2, title: "Week 2", lessons: ["HTML Basics", "CSS Fundamentals"] },
+        { id: 3, title: "Week 3", lessons: ["Intro to Javascript", "Understanding Variables"] },
+    ];
     return (
-        <div>
-            {/* Implement Collapse All button, View Progress button, etc. */}
-            <div id="wd-modules-buttons">
-                <button>Collapse All</button>
-                <button>View Progress</button>
-                <button>Publish All</button>
-                <button>+ Module</button>
+        <div className="p-4">
+            <div id="wd-modules-buttons" className="d-flex justify-content-end gap-2 py-4">
+                <button className="btn btn-secondary">Collapse All</button>
+                <button className="btn btn-secondary">View Progress</button>
+                <button className="btn btn-secondary"><FaCircleCheck fill="green" stroke="white" /> Publish All <FiChevronDown /></button>
+                <button className="btn btn-danger"><FiPlus /> Module</button>
             </div>
-            <ul id="wd-modules">
-                <li className="wd-module">
-                    <div className="wd-title">Week 1</div>
-                    <ul className="wd-lessons">
-                        <li className="wd-lesson">
-                            <span className="wd-title">LEARNING OBJECTIVES</span>
-                            <ul className="wd-content">
-                                <li className="wd-content-item">Introduction to the course</li>
-                                <li className="wd-content-item">Learn what is Web Development</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li className="wd-module">
-                    <div className="wd-title">Week 2</div>
-                    <ul className="wd-lessons">
-                        <li className="wd-lesson">
-                            <span className="wd-title">LEARNING OBJECTIVES</span>
-                            <ul className="wd-content">
-                                <li className="wd-content-item">HTML Basics</li>
-                                <li className="wd-content-item">CSS Fundamentals</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li className="wd-module">
-                    <div className="wd-title">Week 3</div>
-                    <ul className="wd-lessons">
-                        <li className="wd-lesson">
-                            <span className="wd-title">LEARNING OBJECTIVES</span>
-                            <ul className="wd-content">
-                                <li className="wd-content-item">Intro to Javascript</li>
-                                <li className="wd-content-item">Understanding Variables</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
+
+            <ListGroup id="wd-modules">
+                {modules.map((module) => (
+                    <Module key={module.id} module={module} />
+                ))}
+            </ListGroup>
         </div>
     );
 }

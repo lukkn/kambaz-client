@@ -1,6 +1,6 @@
 export default function CourseStatus() {
     return (
-        <div id="wd-course-status">
+        <div id="wd-course-status" className="d-flex flex-column">
             <h2>Course Status</h2>
             <button>Unpublish</button>
             <button>Publish</button>
