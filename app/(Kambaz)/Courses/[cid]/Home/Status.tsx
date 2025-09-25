@@ -1,15 +1,37 @@
+import { AiOutlineHome, AiOutlineStop } from "react-icons/ai";
+import { FaChartSimple, FaCircleCheck, FaRegBell } from "react-icons/fa6";
+import { GrAnnounce } from "react-icons/gr";
+import { LuImport } from "react-icons/lu";
+import { TbFileImport } from "react-icons/tb";
+import { text } from "stream/consumers";
+
 export default function CourseStatus() {
     return (
-        <div id="wd-course-status" className="d-flex flex-column">
-            <h2>Course Status</h2>
-            <button>Unpublish</button>
-            <button>Publish</button>
-            <button>Import Existing Content</button>
-            <button>Import from Commons</button>
-            <button>Choose Home Page</button>
-            <button>View Course Stream</button>
-            <button>New Announcement</button>
-            <button>New Analytics</button>
-            <button>View Course Notifications</button>
+        <div id="wd-course-status" className="d-flex flex-column gap-2 py-4">
+            <h3>Course Status</h3>
+            <div className="d-flex gap-2 my-2">
+                <button className="btn btn-secondary d-flex gap-2 align-items-center"><AiOutlineStop/> Unpublish</button>
+                <button className="btn btn-success d-flex gap-2 align-items-center"><FaCircleCheck /> Publish</button>
+            </div>
+            <StatusButton icon={<LuImport />} text="Import Existing Content" />
+            <StatusButton icon={<TbFileImport />} text="Import from Commons" />
+            <StatusButton icon={<AiOutlineHome />} text="Choose Home Page" />
+            <StatusButton icon={<FaChartSimple />} text="View Course Stream" />
+            <StatusButton icon={<GrAnnounce />} text="New Announcement" />
+            <StatusButton icon={<FaChartSimple />} text="New Analytics" />
+            <StatusButton icon={<FaRegBell />} text="View Course Notifications" />
         </div>);
+}
+
+interface StatusButtonProps {
+    icon: React.ReactNode;
+    text: string;
+}
+
+function StatusButton({ icon, text }: StatusButtonProps) {
+    return (
+        <button className="btn btn-secondary d-flex justify-content-start align-items-center gap-2 overflow-hidden text-truncate">
+            {icon} {text}
+        </button>
+    )
 }

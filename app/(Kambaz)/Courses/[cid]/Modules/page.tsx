@@ -11,7 +11,7 @@ export default function Modules() {
     ];
     return (
         <div className="p-4">
-            <div id="wd-modules-buttons" className="d-flex justify-content-end gap-2 py-4">
+            <div id="wd-modules-buttons" className="d-flex justify-content-end gap-2 pb-4">
                 <button className="btn btn-secondary">Collapse All</button>
                 <button className="btn btn-secondary">View Progress</button>
                 <button className="btn btn-secondary"><FaCircleCheck fill="green" stroke="white" /> Publish All <FiChevronDown /></button>
