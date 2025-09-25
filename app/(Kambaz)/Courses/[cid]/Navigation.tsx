@@ -14,7 +14,7 @@ export default function CourseNavigation() {
         className="list-group-item text-danger border-0"> Assignments </Link>
       <Link href="/Courses/1234/Quizzes" id="wd-course-quizzes-link"
         className="list-group-item text-danger border-0"> Quizzes </Link>
-      <Link href="/Courses/1234/People" id="wd-course-people-link"
+      <Link href="/Courses/1234/People/Table" id="wd-course-people-link"
         className="list-group-item text-danger border-0" > People </Link>
     </div>
 );}
