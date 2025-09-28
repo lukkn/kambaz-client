@@ -20,6 +20,6 @@ body * {
     border-left: 3px solid black !important;
 }
 
-.wd-lesson {
+.wd-lesson, .wd-assignment-list-item {
     border-left: 4px solid var(--bs-success);
 }

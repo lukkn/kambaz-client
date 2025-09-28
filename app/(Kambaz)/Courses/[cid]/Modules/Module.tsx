@@ -12,7 +12,7 @@ export default function Module({ module }: { module: { id: number, title: string
                 <ModuleControlButtons />
             </div>
             
-            <ListGroup className="wd-lessons rounded-0 border-collapse">
+            <ListGroup className="wd-lessons rounded-0">
                 {module.lessons.map((lesson: string, index: number) => (
                     <ListGroupItem className="wd-lesson p-3 d-flex justify-content-between align-items-center" key={index}>
                         <span><RxDragHandleDots2 /> {lesson}</span>
