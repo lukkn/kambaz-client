@@ -6,14 +6,8 @@ export default function LabsLayout({
  children,
 }: Readonly<{ children: ReactNode }>) {
  return (
-   <table>
-     <tbody>
-       <tr>
-         <td valign="top" width="100px">
-           <TOC />
-         </td>
-         <td valign="top">{children}</td>
-       </tr>
-     </tbody>
-   </table>
+    <div className="d-flex p-4">
+      <TOC />
+      <div className="flex-grow-1">{children}</div>
+    </div>
 );}
