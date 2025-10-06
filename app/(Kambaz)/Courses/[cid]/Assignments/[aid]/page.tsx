@@ -1,23 +1,42 @@
+"use client";
+
 import { Button, Form, FormLabel, FormControl, FormSelect, FormCheck, Container, Row, Col } from "react-bootstrap";
+import { useState } from "react";
+
+import { useParams } from "next/navigation";
+import * as db from "../../../../Database";
+import Link from "next/link";
+
 
 export default function AssignmentEditor() {
+    const { cid, aid } = useParams();
+    const assignment = db.assignments.find((assignment) => assignment._id === aid && assignment.course === cid);
+
+    const [title, setTitle] = useState(assignment?.title || "");
+    const [description, setDescription] = useState(assignment?.description || "");
+    const [points, setPoints] = useState(assignment?.points || 0);
+    const [due, setDue] = useState(assignment?.due || "");
+    const [availableFrom, setAvailableFrom] = useState(assignment?.available_from || "");
+    const [availableUntil, setAvailableUntil] = useState(assignment?.available_until || "");
+
+    console.log(new Date().toISOString().slice(0, 16));
     return (
         <div id="wd-assignments-editor">
             <Form className="p-4">
                 <Container>
-                    <Row><Col><FormLabel for="wd-name">Assignment Name</FormLabel></Col></Row>
-                    <Row className="mb-4"><Col><FormControl id="wd-name" type="text" placeholder="Enter assignment name" value="A1" /></Col></Row>
+                    <Row><Col><FormLabel htmlFor="wd-name">Assignment Name</FormLabel></Col></Row>
+                    <Row className="mb-4"><Col><FormControl id="wd-name" type="text" placeholder="Enter assignment name" value={title} onChange={(e) => setTitle(e.target.value)} /></Col></Row>
 
-                    <Row className="mb-4"><Col><FormControl id="wd-description" as="textarea" rows={5} placeholder="Enter assignment description" /></Col></Row>
+                    <Row className="mb-4"><Col><FormControl id="wd-description" as="textarea" rows={5} placeholder="Enter assignment description" value={description} onChange={(e) => setDescription(e.target.value)} /></Col></Row>
 
                     <Row className="mb-4">
-                        <Col xs={2} className="text-end pt-1"><FormLabel for="wd-points">Points</FormLabel></Col>
-                        <Col><FormControl id="wd-points" type="number" placeholder="Enter assignment points" defaultValue={100}/></Col>
+                        <Col xs={2} className="text-end pt-1"><FormLabel htmlFor="wd-points">Points</FormLabel></Col>
+                        <Col><FormControl id="wd-points" type="number" placeholder="Enter assignment points" value={points} onChange={(e) => setPoints(Number(e.target.value))} /></Col>
                     </Row>
 
                     <Row className="mb-4">
-                        <Col xs={2} className="text-end pt-1"><FormLabel for="wd-group">Group</FormLabel></Col>
-                        <Col><FormSelect id="wd-group">
+                        <Col xs={2} className="text-end pt-1"><FormLabel htmlFor="wd-group">Group</FormLabel></Col>
+                        <Col><FormSelect id="wd-group" value="assignments" onChange={() => { }}>
                             <option value="assignments">ASSIGNMENTS</option>
                             <option value="quizzes">QUIZZES</option>
                             <option value="exams">EXAMS</option>
@@ -27,7 +46,7 @@ export default function AssignmentEditor() {
                     </Row>
 
                     <Row className="mb-4">
-                        <Col xs={2} className="text-end pt-1"><FormLabel for="wd-display-grade-as">Display Grade as</FormLabel></Col>
+                        <Col xs={2} className="text-end pt-1"><FormLabel htmlFor="wd-display-grade-as">Display Grade as</FormLabel></Col>
                         <Col><FormSelect id="wd-display-grade-as">
                             <option value="percentage">Percentage</option>
                             <option value="points">Points</option>
@@ -35,7 +54,7 @@ export default function AssignmentEditor() {
                     </Row>
 
                     <Row className="mb-4">
-                        <Col xs={2} className="text-end pt-1"><FormLabel for="wd-submission-type">Submission Type</FormLabel></Col>
+                        <Col xs={2} className="text-end pt-1"><FormLabel htmlFor="wd-submission-type">Submission Type</FormLabel></Col>
                         <Col>
                             <div className="border rounded p-3 d-flex flex-column gap-4">
                                 <FormSelect id="wd-submission-type">
@@ -46,7 +65,7 @@ export default function AssignmentEditor() {
                                 </FormSelect>
 
                                 <div className="d-flex flex-column gap-2">
-                                    <FormLabel for="wd-online-entry-options" className="fw-bold">Online Entry Options</FormLabel>
+                                    <FormLabel htmlFor="wd-online-entry-options" className="fw-bold">Online Entry Options</FormLabel>
                                     <FormCheck id="wd-online-entry-options-text" type="checkbox" label="Text Entry" />
                                     <FormCheck id="wd-online-entry-options-url" type="checkbox" label="Website URL" />
                                     <FormCheck id="wd-online-entry-options-media" type="checkbox" label="Media Recording" />
@@ -62,7 +81,7 @@ export default function AssignmentEditor() {
                         <Col>
                             <div className="border rounded p-3 d-flex flex-column gap-3">
                                 <div>
-                                    <FormLabel for="wd-assign-to" className="fw-bold">Assign To</FormLabel>
+                                    <FormLabel htmlFor="wd-assign-to" className="fw-bold">Assign To</FormLabel>
                                     <FormSelect id="wd-assign-to">
                                         <option value="everyone">Everyone</option>
                                         <option value="section-1">Section 1</option>
@@ -70,26 +89,21 @@ export default function AssignmentEditor() {
                                     </FormSelect>
                                 </div>
                                 <div>
-                                    <FormLabel for="wd-due" className="fw-bold">Due</FormLabel>
-                                    <FormControl id="wd-due" type="datetime-local" defaultValue={new Date().toISOString().slice(0, 16)} />
+                                    <FormLabel htmlFor="wd-due" className="fw-bold">Due</FormLabel>
+                                    <FormControl id="wd-due" type="datetime-local" value={due} onChange={(e) => setDue(e.target.value)} />
                                 </div>
                                 <div className="d-flex gap-2">
                                     <div className="flex-grow-1">
-                                        <FormLabel for="wd-available-from" className="fw-bold">Available From</FormLabel>
-                                        <FormControl id="wd-available-from" type="datetime-local" defaultValue={new Date().toISOString().slice(0, 16)} />
+                                        <FormLabel htmlFor="wd-available-from" className="fw-bold">Available From</FormLabel>
+                                        <FormControl id="wd-available-from" type="datetime-local" value={availableFrom} onChange={(e) => setAvailableFrom(e.target.value)} />
                                     </div>
                                     <div className="flex-grow-1">
-                                        <FormLabel for="wd-available-until" className="fw-bold">Until</FormLabel>
+                                        <FormLabel htmlFor="wd-available-until" className="fw-bold">Until</FormLabel>
                                         <FormControl
                                             id="wd-available-until"
                                             type="datetime-local"
-                                            defaultValue={
-                                                (() => {
-                                                    const date = new Date();
-                                                    date.setDate(date.getDate() + 7);
-                                                    return date.toISOString().slice(0, 16);
-                                                })()
-                                            }
+                                            value={availableUntil}
+                                            onChange={(e) => setAvailableUntil(e.target.value)}
                                         />
                                     </div>
                                 </div>
@@ -97,8 +111,12 @@ export default function AssignmentEditor() {
                         </Col>
                     </Row>
                     <div className="d-flex justify-content-end">
-                        <Button variant="secondary" type="submit" className="me-2">Cancel</Button>
-                        <Button variant="danger" type="submit">Save</Button>
+                        <Button variant="secondary" type="submit" className="me-2">
+                            <Link href={`/Courses/${cid}/Assignments`} className="text-black text-decoration-none">Cancel</Link>
+                        </Button>
+                        <Button variant="danger" type="submit">
+                            <Link href={`/Courses/${cid}/Assignments`} className="text-white text-decoration-none">Save</Link>
+                        </Button>
                     </div>
                 </Container>
             </Form>

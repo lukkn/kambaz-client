@@ -1,45 +1,24 @@
+"use client";
+
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 
+import * as db from "../../../Database";
+
+import { useParams } from "next/navigation";
+
+
 export default function PeopleTable() {
-    const users = [
-        {
-            firstName: "Tony",
-            lastName: "Stark",
-            loginId: "001234561S",
-            section: "S101",
-            role: "STUDENT",
-            lastActivity: "2020-10-01",
-            totalActivity: "10:21:32"
-        },
-        {
-            firstName: "Bruce",
-            lastName: "Wayne",
-            loginId: "001234562S",
-            section: "S102",
-            role: "STUDENT",
-            lastActivity: "2020-10-02",
-            totalActivity: "12:15:45"
-        },
-        {
-            firstName: "Steve",
-            lastName: "Rogers",
-            loginId: "001234563S",
-            section: "S103",
-            role: "STUDENT",
-            lastActivity: "2020-10-03",
-            totalActivity: "15:30:10"
-        },
-        {
-            firstName: "Natasha",
-            lastName: "Romanoff",
-            loginId: "001234564S",
-            section: "S104",
-            role: "STUDENT",
-            lastActivity: "2020-10-04",
-            totalActivity: "20:45:55"
-        }
-    ];
+
+    const { cid } = useParams();
+
+    const users = db.users;
+    const enrollments = db.enrollments;
+
+    const usersInCourse = enrollments
+        .filter(enrollment => enrollment.course === cid)
+        .map(enrollment => users.find(user => user._id === enrollment.user));
+
     return (
         <div id="wd-people-table" className="p-4">
             <Table striped>
@@ -47,7 +26,7 @@ export default function PeopleTable() {
                     <tr><th>Name</th><th>Login ID</th><th>Section</th><th>Role</th><th>Last Activity</th><th>Total Activity</th></tr>
                 </thead>
                 <tbody>
-                    {users.map((user, index) => <User key={index} {...user} />)}
+                    {usersInCourse.map((user, index) => user && <User key={index} {...user} />)}
                 </tbody>
             </Table>
         </div>
