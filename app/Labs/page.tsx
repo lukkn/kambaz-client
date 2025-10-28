@@ -9,7 +9,7 @@ export default function Labs() {
       <Nav className="d-flex flex-column">
         {labs.map((lab, index) => (
           <NavItem key={index}>
-            <NavLink href={`/Labs/Lab${index + 1}`} as={Link}>
+            <NavLink href={`/Labs/Lab${index + 1}`}>
               Lab {index + 1}: {lab}
             </NavLink>
           </NavItem>

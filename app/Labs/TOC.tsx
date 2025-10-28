@@ -19,11 +19,11 @@ export default function TOC() {
       </NavItem>
       {labs.map((lab, index) => (
         <NavItem key={index}>
-          <NavLink href={`/Labs/Lab${index + 1}`} as={Link} className={`nav-link ${pathname.endsWith(`Lab${index + 1}`) ? "active" : ""}`}>Lab {index + 1}</NavLink>
+          <NavLink href={`/Labs/Lab${index + 1}`} className={`nav-link ${pathname.endsWith(`Lab${index + 1}`) ? "active" : ""}`}>Lab {index + 1}</NavLink>
         </NavItem>
       ))}
       <NavItem>
-        <NavLink href="/" as={Link}>Kambaz</NavLink>
+        <NavLink href="/">Kambaz</NavLink>
       </NavItem>
       <NavItem>
         <NavLink href="https://github.com/lukkn/kambaz-cs5610">My GitHub</NavLink>
