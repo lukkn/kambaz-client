@@ -1,26 +1,20 @@
 import Link from "next/link";
+import { Nav, NavItem, NavLink } from "react-bootstrap";
+import labs from "./labs";
+
 export default function Labs() {
   return (
     <div id="wd-labs">
       <h1>Labs</h1>
-      <ul>
-        <li>
-          <Link href="/Labs/Lab1" id="wd-lab1-link">
-            Lab 1: HTML Examples </Link>
-        </li>
-        <li>
-          <Link href="/Labs/Lab2" id="wd-lab2-link">
-            Lab 2: CSS Basics </Link>
-        </li>
-        <li>
-          <Link href="/Labs/Lab3" id="wd-lab3-link">
-            Lab 3: JavaScript Fundamentals </Link>
-        </li>
-      </ul>
-      <div id="wd-author">
-        <p><b>Name:</b> Karen Lu</p>
-        <p><b>Section:</b> 05</p>
-      </div>
+      <Nav className="d-flex flex-column">
+        {labs.map((lab, index) => (
+          <NavItem key={index}>
+            <NavLink href={`/Labs/Lab${index + 1}`} as={Link}>
+              Lab {index + 1}: {lab}
+            </NavLink>
+          </NavItem>
+        ))}
+      </Nav>
     </div>
   );
 }

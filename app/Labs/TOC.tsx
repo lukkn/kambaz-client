@@ -6,6 +6,7 @@
 import { Nav, NavItem, NavLink } from "react-bootstrap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import labs from "./labs";
 
 export default function TOC() {
 
@@ -16,15 +17,11 @@ export default function TOC() {
       <NavItem>
         <NavLink href="/Labs" as={Link} className={`nav-link ${pathname.endsWith("Labs") ? "active" : ""}`}>Labs</NavLink>
       </NavItem>
-      <NavItem>
-        <NavLink href="/Labs/Lab1" as={Link} className={`nav-link ${pathname.endsWith("Lab1") ? "active" : ""}`}>Lab 1</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink href="/Labs/Lab2" as={Link} className={`nav-link ${pathname.endsWith("Lab2") ? "active" : ""}`}>Lab 2</NavLink>
-      </NavItem>
-      <NavItem>
-        <NavLink href="/Labs/Lab3" as={Link} className={`nav-link ${pathname.endsWith("Lab3") ? "active" : ""}`}>Lab 3</NavLink>
-      </NavItem>
+      {labs.map((lab, index) => (
+        <NavItem key={index}>
+          <NavLink href={`/Labs/Lab${index + 1}`} as={Link} className={`nav-link ${pathname.endsWith(`Lab${index + 1}`) ? "active" : ""}`}>Lab {index + 1}</NavLink>
+        </NavItem>
+      ))}
       <NavItem>
         <NavLink href="/" as={Link}>Kambaz</NavLink>
       </NavItem>

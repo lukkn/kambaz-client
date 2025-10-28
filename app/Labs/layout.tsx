@@ -3,11 +3,16 @@ import TOC from "./TOC";
 
 
 export default function LabsLayout({
- children,
+  children,
 }: Readonly<{ children: ReactNode }>) {
- return (
+  return (
     <div className="d-flex p-4">
-      <TOC />
+      <div id="wd-author">
+        <div><b>Name:</b> Karen Lu</div>
+        <div  className="mb-4"><b>Section:</b> 05</div>
+        <TOC />
+      </div>
       <div className="flex-grow-1">{children}</div>
     </div>
-);}
+  );
+}
