@@ -1,21 +1,83 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import CourseCard from "../Courses/CourseCard";
-import { Row } from "react-bootstrap";
+import { Button, Form, FormControl, Row } from "react-bootstrap";
 
 import * as db from "../Database";
 
-export default function Dashboard() {
+import { v4 as uuidv4 } from "uuid";
 
-  const courses = db.courses;
+export default function Dashboard() {
+  const [courses, setCourses] = useState<any[]>(db.courses);
+  const [course, setCourse] = useState<any>({
+    _id: "0",
+    name: "New Course",
+    number: "XX101",
+    startDate: "2023-09-10",
+    endDate: "2023-12-15",
+    image: "/images/reactjs.jpg",
+    description: "New Description",
+  });
+
+  const addNewCourse = () => {
+    const newCourse = { ...course, _id: uuidv4() };
+    setCourses([...courses, newCourse]);
+  }
+
+  const deleteCourse = (courseId: string) => {
+    const updatedCourses = courses.filter((course) => course._id !== courseId);
+    setCourses(updatedCourses);
+  }
+
+  const updateCourse = () => {
+    const updatedCourses = courses.map((c) =>
+      c._id === course._id ? { ...c, ...course } : c
+    );
+    setCourses(updatedCourses);
+  }
 
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
       <main className="px-4 py-2">
+        <h5 className="mb-4">
+          New Course
+          <Button
+            id="wd-add-new-course-click"
+            className="btn btn-info float-end"
+            onClick={addNewCourse}>
+            Add
+          </Button>
+          <Button className="btn btn-warning float-end me-2"
+            onClick={updateCourse} id="wd-update-course-click">
+            Update
+          </Button>
+          <br />
+        </h5>
+
+        <Form className="mb-4">
+          <FormControl
+            defaultValue={course.name}
+            className="mb-2"
+            onChange={(e) => setCourse({ ...course, name: e.target.value })} />
+          <FormControl
+            value={course.description}
+            as="textarea"
+            rows={3}
+            onChange={(e) => setCourse({ ...course, description: e.target.value })} />
+        </Form>
+
         <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4 width-100">
-            {courses.map((course) => (
-              <CourseCard key={course._id} _id={course._id} name={course.name} description={course.description} image={course.image} />
+            {courses?.map((course) => (
+              <CourseCard
+                key={course._id}
+                course={course}
+                deleteCourse={deleteCourse}
+                setCourse={setCourse} />
             ))}
           </Row>
         </div>
