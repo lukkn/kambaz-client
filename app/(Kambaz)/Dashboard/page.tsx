@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewCourse, updateCourse } from "../Courses/reducer";
 
 import CourseCard from "../Courses/CourseCard";
 import { Button, Form, FormControl, Row } from "react-bootstrap";
 
-import * as db from "../Database";
-
-import { v4 as uuidv4 } from "uuid";
-
 export default function Dashboard() {
-  const [courses, setCourses] = useState<any[]>(db.courses);
+
+  const { courses } = useSelector((state: any) => state.coursesReducer);
+  const dispatch = useDispatch();
+
   const [course, setCourse] = useState<any>({
     _id: "0",
     name: "New Course",
@@ -21,23 +22,6 @@ export default function Dashboard() {
     description: "New Description",
   });
 
-  const addNewCourse = () => {
-    const newCourse = { ...course, _id: uuidv4() };
-    setCourses([...courses, newCourse]);
-  }
-
-  const deleteCourse = (courseId: string) => {
-    const updatedCourses = courses.filter((course) => course._id !== courseId);
-    setCourses(updatedCourses);
-  }
-
-  const updateCourse = () => {
-    const updatedCourses = courses.map((c) =>
-      c._id === course._id ? { ...c, ...course } : c
-    );
-    setCourses(updatedCourses);
-  }
-
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
@@ -47,11 +31,13 @@ export default function Dashboard() {
           <Button
             id="wd-add-new-course-click"
             className="btn btn-info float-end"
-            onClick={addNewCourse}>
+            onClick={() => dispatch(addNewCourse(course))}>
             Add
           </Button>
-          <Button className="btn btn-warning float-end me-2"
-            onClick={updateCourse} id="wd-update-course-click">
+          <Button
+            id="wd-update-course-click"
+            className="btn btn-warning float-end me-2"
+            onClick={() => dispatch(updateCourse(course))}>
             Update
           </Button>
           <br />
@@ -59,7 +45,7 @@ export default function Dashboard() {
 
         <Form className="mb-4">
           <FormControl
-            defaultValue={course.name}
+            value={course.name}
             className="mb-2"
             onChange={(e) => setCourse({ ...course, name: e.target.value })} />
           <FormControl
@@ -72,11 +58,10 @@ export default function Dashboard() {
         <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4 width-100">
-            {courses?.map((course) => (
+            {courses?.map((course: any) => (
               <CourseCard
                 key={course._id}
                 course={course}
-                deleteCourse={deleteCourse}
                 setCourse={setCourse} />
             ))}
           </Row>

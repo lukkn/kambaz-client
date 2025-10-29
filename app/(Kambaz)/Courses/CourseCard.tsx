@@ -1,8 +1,11 @@
 import { Card, CardBody, CardImg, CardText, CardTitle, Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
 
+import { useDispatch } from "react-redux";
+import { deleteCourse } from "../Courses/reducer";
+
 export default function CourseCard(
-    { course, deleteCourse, setCourse }:
+    { course, setCourse }:
         {
             course: {
                 _id: string,
@@ -15,9 +18,10 @@ export default function CourseCard(
                 image: string,
                 author?: string
             }
-            deleteCourse: (courseId: string) => any,
             setCourse: (course: any) => any
         }) {
+
+    const dispatch = useDispatch();
 
     return (
         <Col className="wd-dashboard-course" style={{ width: "270px" }}>
@@ -43,7 +47,7 @@ export default function CourseCard(
                     </Button>
                     <Button onClick={(event) => {
                         event.preventDefault();
-                        deleteCourse(course._id);
+                        dispatch(deleteCourse(course._id));
                     }} className="btn btn-danger"
                         id="wd-delete-course-click">
                         Delete
