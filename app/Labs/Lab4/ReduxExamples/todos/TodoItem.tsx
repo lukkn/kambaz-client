@@ -1,5 +1,5 @@
 import { ListGroupItem, Button } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deleteTodo, setTodo } from "./todosReducer";
 
 
