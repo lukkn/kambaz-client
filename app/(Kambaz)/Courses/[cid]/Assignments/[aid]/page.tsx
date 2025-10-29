@@ -19,7 +19,6 @@ export default function AssignmentEditor() {
     const [availableFrom, setAvailableFrom] = useState(assignment?.available_from || "");
     const [availableUntil, setAvailableUntil] = useState(assignment?.available_until || "");
 
-    console.log(new Date().toISOString().slice(0, 16));
     return (
         <div id="wd-assignments-editor">
             <Form className="p-4">

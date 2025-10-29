@@ -1,5 +1,8 @@
 "use client";
 
+import store from "./store";
+import { Provider } from "react-redux";
+
 import ArrayStateVariable from "./ArrayStateVariable";
 import BooleanStateVariables from "./BooleanStateVariables";
 import ClickEvent from "./ClickEvent";
@@ -10,6 +13,7 @@ import ObjectStateVariable from "./ObjectStateVariable";
 import ParentStateComponent from "./ParentStateComponent";
 import PassingDataOnEvent from "./PassingDataOnEvent";
 import PassingFunctions from "./PassingFunctions";
+import ReduxExamples from "./ReduxExamples/page";
 import StringStateVariables from "./StringStateVariables";
 
 export default function Lab4() {
@@ -17,26 +21,28 @@ export default function Lab4() {
         alert("Hello");
     }
     return (
-        <div>
-            <h2>Lab 4</h2>
-            {/* Handling Click Events */}
-            <ClickEvent />
-            <PassingDataOnEvent />
-            <PassingFunctions theFunction={sayHello} />
-            <EventObject />
+        <Provider store={store}>
+            <div>
+                <h2>Lab 4</h2>
+                {/* Handling Click Events */}
+                <ClickEvent />
+                <PassingDataOnEvent />
+                <PassingFunctions theFunction={sayHello} />
+                <EventObject />
 
-            {/* Managing Compoenent State */}
-            <Counter />
-            <BooleanStateVariables />
-            <StringStateVariables />
-            <DateStateVariable />
-            <ObjectStateVariable />
-            <ArrayStateVariable />
-            <ParentStateComponent />
+                {/* Managing Compoenent State */}
+                <Counter />
+                <BooleanStateVariables />
+                <StringStateVariables />
+                <DateStateVariable />
+                <ObjectStateVariable />
+                <ArrayStateVariable />
+                <ParentStateComponent />
 
-            {/* Managing Application State with Redux */}
+                {/* Managing Application State with Redux */}
+                <ReduxExamples />
 
-            
-        </div>
+            </div>
+        </Provider>
     );
 }
