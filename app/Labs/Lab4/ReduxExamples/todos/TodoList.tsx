@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+"use client";
 
 import { ListGroup } from "react-bootstrap";
 
