@@ -3,13 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { useSelector } from "react-redux";
+
 export default function AccountNavigation() {
   const pathname = usePathname();
 
-  const links = [
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  const links = currentUser ? 
+  [
+    { label: "Profile", path: "/Account/Profile" },
+  ] :
+  [
     { label: "Signin", path: "/Account/Signin" },
     { label: "Signup", path: "/Account/Signup" },
-    { label: "Profile", path: "/Account/Profile" },
   ];
 
   return (
@@ -18,9 +25,8 @@ export default function AccountNavigation() {
         <Link
           key={path}
           href={path}
-          className={`list-group-item border-0 ${
-            pathname.includes(path) ? "active" : "text-danger"
-          }`}
+          className={`list-group-item border-0 ${pathname.includes(path) ? "active" : "text-danger"
+            }`}
         >
           {label}
         </Link>

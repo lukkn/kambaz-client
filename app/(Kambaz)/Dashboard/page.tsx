@@ -7,7 +7,11 @@ import { addNewCourse, updateCourse } from "../Courses/reducer";
 import CourseCard from "../Courses/CourseCard";
 import { Button, Form, FormControl, Row } from "react-bootstrap";
 
+import * as db from "../Database";
+
 export default function Dashboard() {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { enrollments } = db;
 
   const { courses } = useSelector((state: any) => state.coursesReducer);
   const dispatch = useDispatch();
@@ -21,6 +25,13 @@ export default function Dashboard() {
     image: "/images/reactjs.jpg",
     description: "New Description",
   });
+
+  const filteredCourses = courses.filter((course: any) =>
+    enrollments.some(
+      (enrollment: any) =>
+        enrollment.user === currentUser?._id &&
+        enrollment.course === course._id
+    ))
 
   return (
     <div id="wd-dashboard">
@@ -55,10 +66,10 @@ export default function Dashboard() {
             onChange={(e) => setCourse({ ...course, description: e.target.value })} />
         </Form>
 
-        <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
+        <h2 id="wd-dashboard-published">Published Courses ({filteredCourses.length})</h2> <hr />
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4 width-100">
-            {courses?.map((course: any) => (
+            {filteredCourses.map((course: any) => (
               <CourseCard
                 key={course._id}
                 course={course}
