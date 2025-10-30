@@ -2,9 +2,7 @@ import { Card, CardBody, CardImg, CardText, CardTitle, Row, Col, Button } from "
 import Link from "next/link";
 
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCourse } from "../Courses/reducer";
-import { enroll, unenroll } from "../Dashboard/enrollmentsReducer";
-import { useEffect, useState } from "react";
+import { deleteCourse, enroll, unenroll } from "../Courses/reducer";
 
 export default function CourseCard(
     { course, setCourse, showEnrollments = false }:
@@ -26,7 +24,7 @@ export default function CourseCard(
 
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+    const { enrollments } = useSelector((state: any) => state.coursesReducer);
 
     const enrolled = enrollments.some(
         (enrollment: any) =>

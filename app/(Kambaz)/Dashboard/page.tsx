@@ -9,7 +9,7 @@ import { Button, Form, FormControl, Row } from "react-bootstrap";
 
 export default function Dashboard() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+  const { enrollments } = useSelector((state: any) => state.coursesReducer);
 
   const { courses } = useSelector((state: any) => state.coursesReducer);
   const dispatch = useDispatch();
@@ -62,7 +62,9 @@ export default function Dashboard() {
           <Button
             id="wd-add-new-course-click"
             className="btn btn-info float-end"
-            onClick={() => dispatch(addNewCourse(course))}>
+            onClick={() => {
+              dispatch(addNewCourse({ course, user: currentUser._id }));
+            }}>
             Add
           </Button>
           <Button

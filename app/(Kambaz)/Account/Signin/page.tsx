@@ -10,7 +10,7 @@ import { Form, FormControl, Button } from "react-bootstrap";
 import * as db from "../../Database";
 
 export default function Signin() {
-  const [credentials, setCredentials] = useState<any>({});
+  const [credentials, setCredentials] = useState<any>({username: "iron_man", password: "stark123"});
   const dispatch = useDispatch();
 
   const signin = () => {
