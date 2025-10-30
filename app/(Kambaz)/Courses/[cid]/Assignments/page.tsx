@@ -8,11 +8,10 @@ import Assignment from "./Assignment";
 import { IoSearch } from "react-icons/io5";
 import { FiPlus } from "react-icons/fi";
 
-import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { useSelector } from "react-redux";
 
 export default function Assignments() {
-    const dispatch = useDispatch();
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     const { cid } = useParams();
     const { assignments } = useSelector((state: any) => state.assignmentsReducer);
@@ -40,7 +39,7 @@ export default function Assignments() {
 
     function AssignmentsControlButtons() {
         return (
-            <div id="wd-assignments-controls" className="text-nowrap">
+            <div id="wd-assignments-controls" className="text-nowrap"  style={{ display: currentUser?.role === "FACULTY" ? "block" : "none" }}>
                 <div className="float-start d-flex align-items-center gap-2 border px-2 rounded-3 w-25">
                     <IoSearch />
                     <input type="text" placeholder="Search..." className="form-control border-0 shadow-none" />

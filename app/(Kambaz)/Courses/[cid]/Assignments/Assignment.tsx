@@ -12,8 +12,8 @@ import { ListGroupItem, ListGroup } from "react-bootstrap";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import { useDispatch, useSelector } from "react-redux";
 import { deleteAssignment } from "./reducer";
-import { useDispatch } from "react-redux";
 
 export default function Assignment({ category }:
     {
@@ -34,6 +34,7 @@ export default function Assignment({ category }:
 
     const dispatch = useDispatch();
     const { cid } = useParams();
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     return (
         <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray">
@@ -76,7 +77,7 @@ export default function Assignment({ category }:
     function ItemControlButtons({ itemId }: { itemId?: string }) {
         return (
             <div className="d-flex gap-2">
-                <FaTrash className="flex-shrink-0 text-danger mx-1" role="button" onClick={() => { dispatch(deleteAssignment(itemId)) }} />
+                <FaTrash className="flex-shrink-0 text-danger mx-1" role="button" onClick={() => { dispatch(deleteAssignment(itemId)) }} style={{ display: currentUser?.role === "FACULTY" ? "block" : "none" }} />
                 <FaCircleCheck fill="green" stroke="white" />
                 <IoEllipsisVertical />
             </div>
