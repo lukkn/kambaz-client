@@ -1,11 +1,13 @@
 import { Card, CardBody, CardImg, CardText, CardTitle, Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteCourse } from "../Courses/reducer";
+import { enroll, unenroll } from "../Dashboard/enrollmentsReducer";
+import { useEffect, useState } from "react";
 
 export default function CourseCard(
-    { course, setCourse }:
+    { course, setCourse, showEnrollments = false }:
         {
             course: {
                 _id: string,
@@ -18,10 +20,19 @@ export default function CourseCard(
                 image: string,
                 author?: string
             }
-            setCourse: (course: any) => any
+            setCourse: (course: any) => any,
+            showEnrollments?: boolean
         }) {
 
     const dispatch = useDispatch();
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
+
+    const enrolled = enrollments.some(
+        (enrollment: any) =>
+            enrollment.user === currentUser?._id &&
+            enrollment.course === course._id
+    );
 
     return (
         <Col className="wd-dashboard-course" style={{ width: "270px" }}>
@@ -36,25 +47,49 @@ export default function CourseCard(
                         </CardText>
                     </CardBody>
                 </Link>
-                <div className="d-flex justify-content-end gap-2 p-2 mb-2 me-2">
-                    <Button id="wd-edit-course-click"
-                        onClick={(event) => {
-                            event.preventDefault();
-                            setCourse(course);
-                        }}
-                        className="btn btn-warning float-end" >
-                        Edit
-                    </Button>
-                    <Button onClick={(event) => {
-                        event.preventDefault();
-                        dispatch(deleteCourse(course._id));
-                    }} className="btn btn-danger"
-                        id="wd-delete-course-click">
-                        Delete
-                    </Button>
-
-                </div>
+                {currentUser?.role === "FACULTY" ? <EditButtons /> : showEnrollments ? <EnrollmentButtons /> : null}
             </Card>
         </Col>
     );
+
+    function EditButtons() {
+        return (
+            <div className="d-flex justify-content-end gap-2 p-2 mb-2 me-2">
+                <Button id="wd-edit-course-click"
+                    onClick={(event) => {
+                        event.preventDefault();
+                        setCourse(course);
+                    }}
+                    className="btn btn-warning float-end" >
+                    Edit
+                </Button>
+                <Button onClick={(event) => {
+                    event.preventDefault();
+                    dispatch(deleteCourse(course._id));
+                }} className="btn btn-danger"
+                    id="wd-delete-course-click">
+                    Delete
+                </Button>
+            </div>
+        )
+    }
+
+    function EnrollmentButtons() {
+        return (
+            <div className="d-flex justify-content-end gap-2 p-2 mb-2 me-2">
+                <Button id="wd-enroll-course-click"
+                    onClick={(event) => {
+                        event.preventDefault();
+                        if (enrolled) {
+                            dispatch(unenroll({ course: course._id, user: currentUser?._id }));
+                        } else {
+                            dispatch(enroll({ course: course._id, user: currentUser?._id }));
+                        }
+                    }}
+                    className={`btn ${enrolled ? "btn-danger" : "btn-success"} float-end`}>
+                    {enrolled ? "Unenroll" : "Enroll"}
+                </Button>
+            </div>
+        )
+    }
 }

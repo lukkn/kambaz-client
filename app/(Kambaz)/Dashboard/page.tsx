@@ -7,11 +7,9 @@ import { addNewCourse, updateCourse } from "../Courses/reducer";
 import CourseCard from "../Courses/CourseCard";
 import { Button, Form, FormControl, Row } from "react-bootstrap";
 
-import * as db from "../Database";
-
 export default function Dashboard() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = db;
+  const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
 
   const { courses } = useSelector((state: any) => state.coursesReducer);
   const dispatch = useDispatch();
@@ -33,10 +31,32 @@ export default function Dashboard() {
         enrollment.course === course._id
     ))
 
+  const [showAllCourses, setShowAllCourses] = useState(false);
+
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
       <main className="px-4 py-2">
+        {currentUser?.role === "FACULTY" ? <NewCourse /> : <Enrollments />}
+        {showAllCourses && <AllCourses />}
+        <h2 id="wd-dashboard-published">Published Courses ({filteredCourses.length})</h2> <hr />
+        <div id="wd-dashboard-courses">
+          <Row xs={1} md={5} className="g-4 width-100">
+            {filteredCourses.map((course: any) => (
+              <CourseCard
+                key={course._id}
+                course={course}
+                setCourse={setCourse} />
+            ))}
+          </Row>
+        </div>
+      </main>
+    </div >
+  );
+
+  function NewCourse() {
+    return (
+      <div>
         <h5 className="mb-4">
           New Course
           <Button
@@ -65,19 +85,36 @@ export default function Dashboard() {
             rows={3}
             onChange={(e) => setCourse({ ...course, description: e.target.value })} />
         </Form>
+      </div>
+    )
+  }
 
-        <h2 id="wd-dashboard-published">Published Courses ({filteredCourses.length})</h2> <hr />
+  function Enrollments() {
+    return (
+      <div className="mb-4 d-flex justify-content-end align-items-center">
+        <Button className="btn btn-info" onClick={() => setShowAllCourses(!showAllCourses)}>Enrollments</Button>
+      </div>
+    )
+  }
+
+  function AllCourses() {
+    return (
+      <div className="mb-4">
         <div id="wd-dashboard-courses">
+          <h2 id="wd-dashboard-published">All Courses ({courses.length})</h2> <hr />
           <Row xs={1} md={5} className="g-4 width-100">
-            {filteredCourses.map((course: any) => (
+            {courses.map((course: any) => (
               <CourseCard
                 key={course._id}
                 course={course}
-                setCourse={setCourse} />
+                setCourse={setCourse}
+                showEnrollments />
             ))}
           </Row>
         </div>
-      </main>
-    </div >
-  );
+      </div>
+    )
+  }
+
 }
+
