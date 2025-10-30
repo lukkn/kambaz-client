@@ -37,24 +37,24 @@ export default function Dashboard() {
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
       <main className="px-4 py-2">
-        {currentUser?.role === "FACULTY"
-          ? (
-            <NewCourse
-              course={course}
-              setCourse={setCourse}
-              onAdd={() => dispatch(addNewCourse({ course, user: currentUser._id }))}
-              onUpdate={() => dispatch(updateCourse(course))}
-            />
-          )
-          : (
-            <Enrollments onToggle={() => setShowAllCourses(!showAllCourses)} />
-          )}
+        <Enrollments onToggle={() => setShowAllCourses(!showAllCourses)} />
         {showAllCourses && (
           <AllCourses
             courses={courses}
             setCourse={setCourse}
           />
         )}
+        
+        {currentUser?.role === "FACULTY"
+          && (
+            <NewCourse
+              course={course}
+              setCourse={setCourse}
+              onAdd={() => dispatch(addNewCourse({ course, user: currentUser._id }))}
+              onUpdate={() => dispatch(updateCourse(course))}
+            />
+          )}
+
         <h2 id="wd-dashboard-published">Published Courses ({filteredCourses.length})</h2> <hr />
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4 width-100">

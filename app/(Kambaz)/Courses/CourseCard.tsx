@@ -45,7 +45,7 @@ export default function CourseCard(
                         </CardText>
                     </CardBody>
                 </Link>
-                {currentUser?.role === "FACULTY" ? <EditButtons /> : showEnrollments ? <EnrollmentButtons /> : null}
+                {showEnrollments ? <EnrollmentButtons /> : (currentUser?.role === "FACULTY" && <EditButtons />)}
             </Card>
         </Col>
     );
