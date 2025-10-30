@@ -3,6 +3,7 @@
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { FaCircleCheck } from "react-icons/fa6";
 import { FiPlus, FiEdit } from "react-icons/fi";
+import { FaTrash } from "react-icons/fa";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { BiChevronDown } from "react-icons/bi";
 
@@ -10,6 +11,9 @@ import { ListGroupItem, ListGroup } from "react-bootstrap";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
+
+import { deleteAssignment } from "./reducer";
+import { useDispatch } from "react-redux";
 
 export default function Assignment({ category }:
     {
@@ -28,6 +32,7 @@ export default function Assignment({ category }:
         }
     }) {
 
+    const dispatch = useDispatch();
     const { cid } = useParams();
 
     return (
@@ -60,23 +65,26 @@ export default function Assignment({ category }:
                                 </div>
                             </Link>
                         </div>
-                        <ItemControlButtons />
+                        <ItemControlButtons itemId={item._id} />
                     </ListGroupItem>
                 ))}
             </ListGroup >
         </ListGroupItem>
     )
+
+
+    function ItemControlButtons({ itemId }: { itemId?: string }) {
+        return (
+            <div className="d-flex gap-2">
+                <FaTrash className="flex-shrink-0 text-danger mx-1" role="button" onClick={() => { dispatch(deleteAssignment(itemId)) }} />
+                <FaCircleCheck fill="green" stroke="white" />
+                <IoEllipsisVertical />
+            </div>
+        )
+    }
 }
 
 
-function ItemControlButtons() {
-    return (
-        <div className="d-flex gap-2">
-            <FaCircleCheck fill="green" stroke="white" />
-            <IoEllipsisVertical />
-        </div>
-    )
-}
 
 function formatDate(dateString: string) {
     const date = new Date(dateString);
