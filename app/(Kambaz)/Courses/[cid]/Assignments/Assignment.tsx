@@ -11,10 +11,25 @@ import { ListGroupItem, ListGroup } from "react-bootstrap";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-export default function Assignment({ category }: { category: { id: number, title: string, weight: number, items: { _id: string, title: string, modules: string, available_from: string, available_until: string, due: string, points: number, description: string }[] } }) {
-    
+export default function Assignment({ category }:
+    {
+        category: {
+            id: number, title: string, weight: number,
+            items: {
+                _id: string,
+                title: string,
+                modules: string,
+                available_from: string,
+                available_until: string,
+                due: string,
+                points: number,
+                description: string
+            }[]
+        }
+    }) {
+
     const { cid } = useParams();
-    
+
     return (
         <ListGroupItem className="wd-module p-0 mb-5 fs-5 border-gray">
             <div className="p-3 bg-secondary d-flex justify-content-between align-items-center">

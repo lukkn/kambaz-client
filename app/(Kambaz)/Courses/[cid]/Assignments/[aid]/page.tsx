@@ -3,14 +3,18 @@
 import { Button, Form, FormLabel, FormControl, FormSelect, FormCheck, Container, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 
-import { useParams } from "next/navigation";
-import * as db from "../../../../Database";
+import { useParams, redirect } from "next/navigation";
 import Link from "next/link";
 
+import { addAssignment, updateAssignment } from "../reducer";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function AssignmentEditor() {
+    const dispatch = useDispatch();
+
     const { cid, aid } = useParams();
-    const assignment = db.assignments.find((assignment) => assignment._id === aid && assignment.course === cid);
+    const assignments = useSelector((state: any) => state.assignmentsReducer.assignments);
+    const assignment = assignments.find((assignment: any) => assignment._id === aid && assignment.course === cid);
 
     const [title, setTitle] = useState(assignment?.title || "");
     const [description, setDescription] = useState(assignment?.description || "");
@@ -113,9 +117,29 @@ export default function AssignmentEditor() {
                         <Button variant="secondary" type="submit" className="me-2">
                             <Link href={`/Courses/${cid}/Assignments`} className="text-black text-decoration-none">Cancel</Link>
                         </Button>
-                        <Button variant="danger" type="submit">
-                            <Link href={`/Courses/${cid}/Assignments`} className="text-white text-decoration-none">Save</Link>
-                        </Button>
+
+                        <Link href={`/Courses/${cid}/Assignments`} className="text-white text-decoration-none">
+                            <Button variant="danger" type="submit" onClick={() => {
+                                const newAssignment = {
+                                    title: title,
+                                    course: cid,
+                                    modules: "Multiple Modules",
+                                    available_from: availableFrom,
+                                    available_until: availableUntil,
+                                    due: due,
+                                    points: points,
+                                    description: description,
+                                };
+                                if (aid === "newAssignment") {
+                                    dispatch(addAssignment(newAssignment));
+                                } else {
+                                    console.log("Dispatching update for assignment ID:", aid);
+                                    dispatch(updateAssignment({ assignmentId: aid, assignment: newAssignment }));
+                                }
+                            }}>
+                                Save
+                            </Button>
+                        </Link>
                     </div>
                 </Container>
             </Form>
