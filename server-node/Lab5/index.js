@@ -13,3 +13,4 @@ export default function Lab5(app) {
     WorkingWithObjects(app);
     WorkingWithArrays(app);
 };
+ 
