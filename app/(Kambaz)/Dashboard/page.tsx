@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, updateCourse } from "../Courses/reducer";
+import { addNewCourse, updateCourse, setCourses } from "../Courses/reducer";
 
 import CourseCard from "../Courses/CourseCard";
 import { Button, Form, FormControl, Row } from "react-bootstrap";
 
+import * as client from "../Courses/client";
+
 export default function Dashboard() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments } = useSelector((state: any) => state.coursesReducer);
 
   const { courses } = useSelector((state: any) => state.coursesReducer);
   const dispatch = useDispatch();
@@ -24,14 +25,37 @@ export default function Dashboard() {
     description: "New Description",
   });
 
-  const filteredCourses = courses.filter((course: any) =>
-    enrollments.some(
-      (enrollment: any) =>
-        enrollment.user === currentUser?._id &&
-        enrollment.course === course._id
-    ))
-
   const [showAllCourses, setShowAllCourses] = useState(false);
+
+  const fetchCourses = async () => {
+    try {
+      const courses = await client.findMyCourses();
+      dispatch(setCourses(courses));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onAddNewCourse = async () => {
+    const newCourse = await client.createCourse(course);
+    dispatch(setCourses([...courses, newCourse]));
+  };
+
+  const onDeleteCourse = async (courseId: string) => {
+    const status = await client.deleteCourse(courseId);
+    dispatch(setCourses(courses.filter((course: any) => course._id !== courseId)));
+  };
+
+  const onUpdateCourse = async () => {
+    await client.updateCourse(course);
+    dispatch(setCourses(courses.map((c: any) => (c._id === course._id ? course : c))));
+  };
+
+
+  useEffect(() => {
+    fetchCourses();
+  }, [currentUser]);
+
 
   return (
     <div id="wd-dashboard">
@@ -44,25 +68,26 @@ export default function Dashboard() {
             setCourse={setCourse}
           />
         )}
-        
+
         {currentUser?.role === "FACULTY"
           && (
             <NewCourse
               course={course}
               setCourse={setCourse}
-              onAdd={() => dispatch(addNewCourse({ course, user: currentUser._id }))}
-              onUpdate={() => dispatch(updateCourse(course))}
+              onAdd={onAddNewCourse}
+              onUpdate={onUpdateCourse}
             />
           )}
 
-        <h2 id="wd-dashboard-published">Published Courses ({filteredCourses.length})</h2> <hr />
+        <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2> <hr />
         <div id="wd-dashboard-courses">
           <Row xs={1} md={5} className="g-4 width-100">
-            {filteredCourses.map((course: any) => (
+            {courses.map((course: any) => (
               <CourseCard
                 key={course._id}
                 course={course}
-                setCourse={setCourse} />
+                setCourse={setCourse}
+                deleteCourse={onDeleteCourse} />
             ))}
           </Row>
         </div>

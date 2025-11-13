@@ -1,11 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { courses, enrollments } from "../Database";
 import { v4 as uuidv4 } from "uuid";
 
 // Single source of truth: keep courses and enrollments in ONE slice
 const initialState = {
-  courses: courses,
-  enrollments: enrollments,
+  courses: [],
+  enrollments: [],
 };
 
 const coursesSlice = createSlice({
@@ -15,16 +14,15 @@ const coursesSlice = createSlice({
     addNewCourse: (state, { payload: { course, user } }) => {
       const newCourse = { ...course, _id: uuidv4() };
       state.courses = [...state.courses, newCourse] as any;
-
-      // Auto-enroll the creator to the new course (kept from original behavior)
-      const enrollment = { _id: uuidv4(), course: newCourse._id, user };
-      state.enrollments.push(enrollment as any);
     },
     deleteCourse: (state, { payload: courseId }) => {
       state.courses = state.courses.filter((course: any) => course._id !== courseId);
     },
     updateCourse: (state, { payload: course }) => {
       state.courses = state.courses.map((c: any) => (c._id === course._id ? course : c)) as any;
+    },
+    setCourses: (state, { payload: courses }) => {
+      state.courses = courses;
     },
     enroll: (state, { payload: { course, user } }) => {
       const already = state.enrollments.some(
@@ -43,6 +41,6 @@ const coursesSlice = createSlice({
   },
 });
 
-export const { addNewCourse, deleteCourse, updateCourse, enroll, unenroll } =
+export const { addNewCourse, deleteCourse, updateCourse, setCourses, enroll, unenroll } =
   coursesSlice.actions;
 export default coursesSlice.reducer;

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteCourse, enroll, unenroll } from "../Courses/reducer";
 
 export default function CourseCard(
-    { course, setCourse, showEnrollments = false }:
+    { course, setCourse, showEnrollments = false, deleteCourse }:
         {
             course: {
                 _id: string,
@@ -19,7 +19,8 @@ export default function CourseCard(
                 author?: string
             }
             setCourse: (course: any) => any,
-            showEnrollments?: boolean
+            showEnrollments?: boolean,
+            deleteCourse: (id: string) => any
         }) {
 
     const dispatch = useDispatch();
@@ -63,7 +64,7 @@ export default function CourseCard(
                 </Button>
                 <Button onClick={(event) => {
                     event.preventDefault();
-                    dispatch(deleteCourse(course._id));
+                    deleteCourse(course._id);
                 }} className="btn btn-danger"
                     id="wd-delete-course-click">
                     Delete
