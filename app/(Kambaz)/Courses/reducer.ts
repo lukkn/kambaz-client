@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 // Single source of truth: keep courses and enrollments in ONE slice
 const initialState = {
   courses: [],
-  enrollments: [],
+  enrollments: [] as any[],
 };
 
 const coursesSlice = createSlice({
