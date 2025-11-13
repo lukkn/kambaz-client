@@ -1,0 +1,30 @@
+import * as client from "./client";
+
+import { useState, useEffect } from "react";
+
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "./reducer";
+
+export default function Session({children}: {children: any}) {
+    const [pending, setPending] = useState(true);
+    const dispatch = useDispatch();
+
+    const fetchProfile = async () => {
+        console.log("fetching profile...");
+        try {
+            const currentUser = await client.profile();
+            dispatch(setCurrentUser(currentUser));
+        } catch (err: any) {
+            console.log(err);
+        }
+        setPending(false);
+    };
+
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    if (!pending) {
+        return children;
+    }
+}

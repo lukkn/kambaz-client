@@ -4,21 +4,32 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setCurrentUser } from "../reducer";
 import { Button, FormControl, FormLabel } from "react-bootstrap";
+import * as client from "../client";
+
+
 export default function Profile() {
   const [profile, setProfile] = useState<any>({});
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+
   const fetchProfile = () => {
     if (!currentUser) return redirect("/Account/Signin");
     setProfile(currentUser);
   };
-  const signout = () => {
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  }
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     redirect("/Account/Signin");
   };
+
   useEffect(() => {
     fetchProfile();
   }, []);
+
   return (
     <div className="wd-profile-screen w-25">
       <h3>Profile</h3>
@@ -65,6 +76,9 @@ export default function Profile() {
             <option value="FACULTY">Faculty</option>{" "}
             <option value="STUDENT">Student</option>
           </select>
+          <Button onClick={updateProfile} variant="info" className="w-100 my-2" id="wd-update-profile-btn">
+            Update Profile
+          </Button>
           <Button onClick={signout} variant="danger" className="w-100 my-2" id="wd-signout-btn">
             Sign out
           </Button>
