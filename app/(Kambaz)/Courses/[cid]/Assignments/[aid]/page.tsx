@@ -3,11 +3,13 @@
 import { Button, Form, FormLabel, FormControl, FormSelect, FormCheck, Container, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 
-import { useParams, redirect } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 
-import { addAssignment, updateAssignment } from "../reducer";
+import { addAssignment, updateAssignment, setAssignments } from "../reducer";
 import { useDispatch, useSelector } from "react-redux";
+
+import * as client from "../../../client";
 
 export default function AssignmentEditor() {
     const dispatch = useDispatch();
@@ -22,6 +24,22 @@ export default function AssignmentEditor() {
     const [due, setDue] = useState(assignment?.due || "");
     const [availableFrom, setAvailableFrom] = useState(assignment?.available_from || "");
     const [availableUntil, setAvailableUntil] = useState(assignment?.available_until || "");
+
+    
+    const onAddAssignment = async (newAssignment: any) => {
+        console.log("Adding new assignment:", newAssignment);
+        if (!cid) return;
+        await client.createAssignment(cid as string, newAssignment);
+    }
+
+    const onUpdateAssignment = async (assignment: any) => {
+        console.log("Updating assignment with ID:", aid, "Data:", assignment);
+        await client.updateAssignment(aid as string, assignment);
+        const newAssignments = assignments.map((a: any) =>
+            a._id === aid ? assignment : a
+        );
+        console.log("New assignments after update:", newAssignments);
+    }
 
     return (
         <div id="wd-assignments-editor">
@@ -131,10 +149,11 @@ export default function AssignmentEditor() {
                                     description: description,
                                 };
                                 if (aid === "newAssignment") {
-                                    dispatch(addAssignment(newAssignment));
+                                    onAddAssignment(newAssignment);
                                 } else {
                                     console.log("Dispatching update for assignment ID:", aid);
-                                    dispatch(updateAssignment({ assignmentId: aid, assignment: newAssignment }));
+                                    const updatedAssignment = { _id: aid, ...newAssignment};
+                                    onUpdateAssignment(updatedAssignment);
                                 }
                             }}>
                                 Save

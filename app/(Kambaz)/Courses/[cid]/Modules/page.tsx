@@ -11,7 +11,6 @@ import { addModule, updateModule, deleteModule, setModules } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
 
 import * as client from "../../client";
-import { on } from "events";
 
 export default function Modules() {
     const params = useParams();
