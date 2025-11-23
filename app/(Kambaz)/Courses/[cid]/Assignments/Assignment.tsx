@@ -12,7 +12,7 @@ import { ListGroupItem, ListGroup } from "react-bootstrap";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { deleteAssignment } from "./reducer";
 
 export default function Assignment({ category, deleteAssignment }:
@@ -33,7 +33,6 @@ export default function Assignment({ category, deleteAssignment }:
         deleteAssignment: (assignmentId: string) => void
     }) {
 
-    const dispatch = useDispatch();
     const { cid } = useParams();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     

@@ -38,7 +38,6 @@ const assignmentsSlice = createSlice({
         },
         setAssignments: (state, action) => {
             state.assignments = action.payload;
-            console.log("Assignments set in reducer:", state.assignments);
         }
     },
 });

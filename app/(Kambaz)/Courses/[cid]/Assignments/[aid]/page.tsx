@@ -3,7 +3,7 @@
 import { Button, Form, FormLabel, FormControl, FormSelect, FormCheck, Container, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 
-import { useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 
 import { addAssignment, updateAssignment, setAssignments } from "../reducer";
@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as client from "../../../client";
 
 export default function AssignmentEditor() {
-    const dispatch = useDispatch();
+    const router = useRouter();
 
     const { cid, aid } = useParams();
     const assignments = useSelector((state: any) => state.assignmentsReducer.assignments);
@@ -25,17 +25,16 @@ export default function AssignmentEditor() {
     const [availableFrom, setAvailableFrom] = useState(assignment?.available_from || "");
     const [availableUntil, setAvailableUntil] = useState(assignment?.available_until || "");
 
-    
+
     const onAddAssignment = async (newAssignment: any) => {
         if (!cid) return;
         await client.createAssignment(cid as string, newAssignment);
+        router.push(`/Courses/${cid}/Assignments`);
     }
 
     const onUpdateAssignment = async (assignment: any) => {
         await client.updateAssignment(aid as string, assignment);
-        const newAssignments = assignments.map((a: any) =>
-            a._id === aid ? assignment : a
-        );
+        router.push(`/Courses/${cid}/Assignments`);
     }
 
     return (
@@ -129,33 +128,29 @@ export default function AssignmentEditor() {
                         </Col>
                     </Row>
                     <div className="d-flex justify-content-end">
-                        <Button variant="secondary" type="submit" className="me-2">
+                        <Button variant="secondary" type="button" className="me-2">
                             <Link href={`/Courses/${cid}/Assignments`} className="text-black text-decoration-none">Cancel</Link>
                         </Button>
-
-                        <Link href={`/Courses/${cid}/Assignments`} className="text-white text-decoration-none">
-                            <Button variant="danger" type="submit" onClick={() => {
-                                const newAssignment = {
-                                    title: title,
-                                    course: cid,
-                                    modules: "Multiple Modules",
-                                    available_from: availableFrom,
-                                    available_until: availableUntil,
-                                    due: due,
-                                    points: points,
-                                    description: description,
-                                };
-                                if (aid === "newAssignment") {
-                                    onAddAssignment(newAssignment);
-                                } else {
-                                    console.log("Dispatching update for assignment ID:", aid);
-                                    const updatedAssignment = { _id: aid, ...newAssignment};
-                                    onUpdateAssignment(updatedAssignment);
-                                }
-                            }}>
-                                Save
-                            </Button>
-                        </Link>
+                        <Button variant="danger" type="button" onClick={() => {
+                            const newAssignment = {
+                                title: title,
+                                course: cid,
+                                modules: "Multiple Modules",
+                                available_from: availableFrom,
+                                available_until: availableUntil,
+                                due: due,
+                                points: points,
+                                description: description,
+                            };
+                            if (aid === "newAssignment") {
+                                onAddAssignment(newAssignment);
+                            } else {
+                                const updatedAssignment = { _id: aid, ...newAssignment };
+                                onUpdateAssignment(updatedAssignment)
+                            }
+                        }}>
+                            Save
+                        </Button>
                     </div>
                 </Container>
             </Form>
