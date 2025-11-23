@@ -25,5 +25,7 @@ export default function Session({children}: {children: any}) {
 
     if (!pending) {
         return children;
+    } else {
+        return <h2 className="m-4">Loading...</h2>;
     }
 }
