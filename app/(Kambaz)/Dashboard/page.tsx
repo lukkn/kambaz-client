@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewCourse, updateCourse, setCourses } from "../Courses/reducer";
 
-import CourseCard from "../Courses/CourseCard";
+import CourseCard from "./CourseCard";
 import { Button, Form, FormControl, Row } from "react-bootstrap";
 
 import * as client from "../Courses/client";

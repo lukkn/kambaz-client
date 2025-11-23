@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Card, CardBody, CardImg, CardText, CardTitle, Row, Col, Button } from "react-bootstrap";
 import Link from "next/link";
 
@@ -72,22 +74,24 @@ export default function CourseCard(
     }
 
     function EnrollmentButtons() {
+        const [loading, setLoading] = useState(false);
         return (
             <div className="d-flex justify-content-end gap-2 p-2 mb-2 me-2">
                 <Button id="wd-enroll-course-click"
                     onClick={async (event) => {
                         event.preventDefault();
+                        setLoading(true);
                         if (enrolled) {
-                            client.unenrollFromCourse(course._id);
+                            await client.unenrollFromCourse(course._id);
                             dispatch(setCourses(await client.findMyCourses()));
-
                         } else {
-                            client.enrollInCourse(course._id);
+                            await client.enrollInCourse(course._id);
                             dispatch(setCourses(await client.findMyCourses()));
                         }
+                        setLoading(false);
                     }}
                     className={`btn ${enrolled ? "btn-danger" : "btn-success"} float-end`}>
-                    {enrolled ? "Unenroll" : "Enroll"}
+                    {loading ? "Loading..." : (enrolled ? "Unenroll" : "Enroll")}
                 </Button>
             </div>
         )
