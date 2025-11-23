@@ -27,18 +27,15 @@ export default function AssignmentEditor() {
 
     
     const onAddAssignment = async (newAssignment: any) => {
-        console.log("Adding new assignment:", newAssignment);
         if (!cid) return;
         await client.createAssignment(cid as string, newAssignment);
     }
 
     const onUpdateAssignment = async (assignment: any) => {
-        console.log("Updating assignment with ID:", aid, "Data:", assignment);
         await client.updateAssignment(aid as string, assignment);
         const newAssignments = assignments.map((a: any) =>
             a._id === aid ? assignment : a
         );
-        console.log("New assignments after update:", newAssignments);
     }
 
     return (

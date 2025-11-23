@@ -72,3 +72,13 @@ export const updateAssignment = async (assignmentID: string, assignment: any) =>
     const { data } = await axiosWithCredentials.put(`${ASSIGNMENTS_API}/${assignmentID}`, assignment);
     return data;
 }
+
+export const enrollInCourse = async (courseId: string) => {
+    const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses/${courseId}/enroll`);
+    return data;
+}
+
+export const unenrollFromCourse = async (courseId: string) => {
+    const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses/${courseId}/unenroll`);
+    return data;
+}

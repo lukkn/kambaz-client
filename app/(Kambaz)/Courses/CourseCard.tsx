@@ -2,10 +2,11 @@ import { Card, CardBody, CardImg, CardText, CardTitle, Row, Col, Button } from "
 import Link from "next/link";
 
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCourse, enroll, unenroll } from "../Courses/reducer";
+import { setCourses, deleteCourse, enroll, unenroll } from "../Courses/reducer";
+import * as client from "../Courses/client";
 
 export default function CourseCard(
-    { course, showEnrollments = false, setCourse, deleteCourse }:
+    { course, showEnrollments = false, enrolled, setCourse, deleteCourse }:
         {
             course: {
                 _id: string,
@@ -19,19 +20,13 @@ export default function CourseCard(
                 author?: string
             }
             showEnrollments?: boolean,
+            enrolled?: boolean,
             setCourse: (course: any) => any,
             deleteCourse?: (id: string) => any
         }) {
 
     const dispatch = useDispatch();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
-    const { enrollments } = useSelector((state: any) => state.coursesReducer);
-
-    const enrolled = enrollments.some(
-        (enrollment: any) =>
-            enrollment.user === currentUser?._id &&
-            enrollment.course === course._id
-    );
 
     return (
         <Col className="wd-dashboard-course" style={{ width: "270px" }}>
@@ -53,6 +48,7 @@ export default function CourseCard(
 
     function EditButtons() {
         return (
+
             <div className="d-flex justify-content-end gap-2 p-2 mb-2 me-2">
                 <Button id="wd-edit-course-click"
                     onClick={(event) => {
@@ -79,12 +75,15 @@ export default function CourseCard(
         return (
             <div className="d-flex justify-content-end gap-2 p-2 mb-2 me-2">
                 <Button id="wd-enroll-course-click"
-                    onClick={(event) => {
+                    onClick={async (event) => {
                         event.preventDefault();
                         if (enrolled) {
-                            dispatch(unenroll({ course: course._id, user: currentUser?._id }));
+                            client.unenrollFromCourse(course._id);
+                            dispatch(setCourses(await client.findMyCourses()));
+
                         } else {
-                            dispatch(enroll({ course: course._id, user: currentUser?._id }));
+                            client.enrollInCourse(course._id);
+                            dispatch(setCourses(await client.findMyCourses()));
                         }
                     }}
                     className={`btn ${enrolled ? "btn-danger" : "btn-success"} float-end`}>

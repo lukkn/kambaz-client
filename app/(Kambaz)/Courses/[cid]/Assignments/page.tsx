@@ -11,7 +11,6 @@ import { FiPlus } from "react-icons/fi";
 import { useSelector, useDispatch } from "react-redux";
 import { setAssignments } from "./reducer";
 
-
 import * as client from "../../client";
 import { useEffect } from "react";
 
@@ -31,14 +30,11 @@ export default function Assignments() {
     ]
 
     const fetchAssignments = async () => {
-        console.log("Fetching assignments for course:", cid);
         const assignments = await client.findAssignmentsForCourse(cid as string);
-        console.log("fetched assignments:", assignments)
         dispatch(setAssignments(assignments));
     }
 
     const onDeleteAssignment = async (assignmentId: string) => {
-        console.log("Deleting assignment with ID:", assignmentId);
         await client.deleteAssignment(assignmentId);
         dispatch(setAssignments(assignments.filter((a: any) => a._id !== assignmentId)));
     }

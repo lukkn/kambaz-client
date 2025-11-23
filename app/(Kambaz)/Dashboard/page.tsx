@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   const [showAllCourses, setShowAllCourses] = useState(false);
 
-  const fetchCourses = async () => {
+  const fetchUserCourses = async () => {
     try {
       const courses = await client.findMyCourses();
       dispatch(setCourses(courses));
@@ -53,7 +53,7 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-    fetchCourses();
+    fetchUserCourses();
   }, [currentUser]);
 
 
@@ -64,8 +64,8 @@ export default function Dashboard() {
         <Enrollments onToggle={() => setShowAllCourses(!showAllCourses)} />
         {showAllCourses && (
           <AllCourses
-            courses={courses}
             setCourse={setCourse}
+            userCourses={courses}
           />
         )}
 
@@ -152,25 +152,38 @@ function Enrollments({ onToggle }: { onToggle: () => void }) {
   );
 }
 
-function AllCourses({
-  courses,
-  setCourse,
-}: {
-  courses: CourseType[];
-  setCourse: (c: CourseType) => void;
-}) {
+function AllCourses({ setCourse, userCourses }: { setCourse: (c: CourseType) => void; userCourses: CourseType[] }) {
+  
+  const [courses, setCourses] = useState<CourseType[]>([]);
+
+  const fetchAllCourses = async () => {
+    try {
+      const courses = await client.fetchAllCourses();
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+    useEffect(() => {
+    fetchAllCourses();
+  }, []);
+
   return (
     <div className="mb-4">
       <div id="wd-dashboard-courses">
         <h2 id="wd-dashboard-published">All Courses ({courses.length})</h2> <hr />
         <Row xs={1} md={5} className="g-4 width-100">
-          {courses.map((course: any) => (
+          {courses ?
+          courses.map((course: any) => (
             <CourseCard
               key={course._id}
               course={course}
               setCourse={setCourse}
-              showEnrollments />
-          ))}
+              showEnrollments
+              enrolled={userCourses.some((c) => c._id === course._id)}
+               />
+          )) : <p>Loading...</p>}
         </Row>
       </div>
     </div>
