@@ -90,7 +90,7 @@ export default function CourseCard(
                         }
                         setLoading(false);
                     }}
-                    className={`btn ${enrolled ? "btn-danger" : "btn-success"} float-end`}>
+                    className={`btn ${loading ? "btn-primary" :(enrolled ? "btn-danger" : "btn-success")} float-end`}>
                     {loading ? "Loading..." : (enrolled ? "Unenroll" : "Enroll")}
                 </Button>
             </div>
