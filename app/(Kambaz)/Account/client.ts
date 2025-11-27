@@ -25,9 +25,14 @@ export const updateUser = async (user: any) => {
 export const profile = async () => {
   const response = await axiosWithCredentials.post( `${USERS_API}/profile`);
   return response.data;
-}
+};
 
 export const signout = async () => {
   const response = await axiosWithCredentials.post( `${USERS_API}/signout` );
   return response.data;
-}
+};
+
+export const findAllUsers = async () => {
+  const response = await axiosWithCredentials.get( USERS_API );
+  return response.data;
+};
