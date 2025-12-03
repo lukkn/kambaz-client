@@ -17,11 +17,6 @@ export const signup = async (user: any) => {
   return response.data;
 };
 
-export const updateUser = async (user: any) => {
-  const response = await axiosWithCredentials.put( `${USERS_API}/${user._id}`, user );
-  return response.data;
-};
-
 export const profile = async () => {
   const response = await axiosWithCredentials.post( `${USERS_API}/profile`);
   return response.data;
@@ -32,7 +27,39 @@ export const signout = async () => {
   return response.data;
 };
 
+
+export const createUser = async (user: any) => {
+  const response = await axiosWithCredentials.post( USERS_API, user );
+  return response.data;
+}
+
+export const updateUser = async (user: any) => {
+  const response = await axiosWithCredentials.put( `${USERS_API}/${user._id}`, user );
+  return response.data;
+};
+
+export const deleteUser = async ( uid: string ) => {
+  const response = await axiosWithCredentials.delete( `${USERS_API}/${uid}` );
+  return response.data;
+}
+
 export const findAllUsers = async () => {
   const response = await axiosWithCredentials.get( USERS_API );
+  return response.data;
+};
+
+export const findUsersByRole = async ( role: string ) => {
+  const response = await axiosWithCredentials.get( `${USERS_API}?role=${role}` );
+  return response.data;
+};
+
+export const findUsersByPartialName = async ( partialName: string ) => {
+  const response = await axiosWithCredentials.get( `${USERS_API}?name=${partialName}` );
+  console.log("Response from server:", response.data);
+  return response.data;
+};
+
+export const findUserById = async ( uid: string ) => {
+  const response = await axiosWithCredentials.get( `${USERS_API}/${uid}` );
   return response.data;
 };

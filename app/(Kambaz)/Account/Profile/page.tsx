@@ -31,7 +31,7 @@ export default function Profile() {
   }, []);
 
   return (
-    <div className="wd-profile-screen w-25">
+    <div className="wd-profile-screen w-25 p-4">
       <h3>Profile</h3>
       {profile && (
         <div>
