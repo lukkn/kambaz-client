@@ -177,7 +177,7 @@ function AllCourses({ setCourse, userCourses }: { setCourse: (c: CourseType) => 
           {courses ?
           courses.map((course: any) => (
             <CourseCard
-              key={course._id}
+              key={`${course._id}-all`}
               course={course}
               setCourse={setCourse}
               showEnrollments
