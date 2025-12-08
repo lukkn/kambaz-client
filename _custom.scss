@@ -6,8 +6,16 @@ $theme-colors: (
   "danger": #D41B2C,
   "warning": #ffc008,
   "dark": #9CA2A7,
-  "pazza-dark": #0C5FAB,
-  "pazza-light": #E7EFF7,
+  "pazza-primary": #0C5FAB,
+  "pazza-secondary": #0a5192,
+  "pazza-light": #F5F5F5,
+  "pazza-dark": #7E7F80,
+  "pazza-warning": #fff9e4,
+  "pazza-warning-dark": #8c3f14,
+  "pazza-danger": #b6403c,
+  "pazza-success": #ecfef0,
+  "pazza-success-dark": #355e35,
 );
 
-@import '~bootstrap/scss/bootstrap';
+// @deprecation-ignore-next
+@import 'node_modules/bootstrap/scss/bootstrap';
