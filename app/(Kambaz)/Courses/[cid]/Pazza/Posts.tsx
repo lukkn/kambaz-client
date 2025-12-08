@@ -27,7 +27,29 @@ export default function Posts() {
             content: "Explore the various features available on Piazza.",
             user: "Moderator",
             date: "2024-01-03",
+        },
+        {
+            id: 4,
+            title: "Getting Help",
+            content: "If you need help, feel free to ask questions here.",
+            user: "Support",
+            date: "2024-01-04",
+        },
+        {
+            id: 5,
+            title: "Community Guidelines",
+            content: "Please adhere to our community guidelines while posting.",
+            user: "Admin",
+            date: "2024-01-05",
+        },
+        {
+            id: 6,
+            title: "Upcoming Features",
+            content: "Stay tuned for upcoming features on Piazza.",
+            user: "Product Team",
+            date: "2024-01-06",
         }
+        
     ]; // Placeholder for posts data
 
     const categories = ["PINNED", "TODAY", "YESTERDAY", "LAST WEEK", "EARLIER"];
@@ -51,7 +73,7 @@ export default function Posts() {
                     <BsThreeDotsVertical className="m-3 float-end" />
                 </div>
                 <div>
-                    <div className="bg-pazza-light">
+                    <div className="bg-pazza-light border">
                         <FaChevronDown className="m-2" />
                         Pinned
                         <LuPin className="m-2 float-end" />

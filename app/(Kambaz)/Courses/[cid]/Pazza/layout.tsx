@@ -10,9 +10,9 @@ export default function PazzaLayout({ children }: Readonly<{ children: ReactNode
             <PazzaNavigation />
             <div className="d-flex flex-row">
                 <Posts />
-                <div>
+                <div className="flex-grow-1">
                     <Folders />
-                    <div className="wd-main-content-offset p-3 flex-fill">
+                    <div className="p-4">
                         {children}
                     </div>
                 </div>
