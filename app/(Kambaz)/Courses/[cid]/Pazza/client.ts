@@ -13,7 +13,7 @@ export const createPazzaPost = async ( post: any ) => {
 };
 
 export const findPazzaPostsByCourse = async ( cid: string ) => {
-  const response = await axiosWithCredentials.get( `${PAZZA_API}/course/${cid}` );
+  const response = await axiosWithCredentials.get( `${PAZZA_API}/${cid}` );
   return response.data;
 };
 

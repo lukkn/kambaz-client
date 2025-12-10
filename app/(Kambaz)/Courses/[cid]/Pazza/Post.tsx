@@ -10,18 +10,24 @@ import { RiChat3Line } from "react-icons/ri";
 import { FaRegUserCircle, FaCheck } from "react-icons/fa";
 
 
-export default function Post() {
+export default function Post({ post }: { post: any }) {
+    return (
+        post ? <PostDetails post={post} /> : <div className="text-pazza-dark">Select a post to view its details.</div>
+    );
+}
+
+function PostDetails({ post }: { post: any }) {
     return (
         <div className="">
             <div className="mb-4">
                 <FaArrowLeft className="me-2 text-pazza-primary" size={20} />
                 <CgNotes className="me-2" size={20} />
-                <span className="me-2 fw-bold">note</span>
-                <span className="text-pazza-dark">@123</span>
+                <span className="me-2 fw-bold">{post.type}</span>
+                <span className="text-pazza-dark">@{post._id}</span>
             </div>
-            <h2>Post Title</h2>
-            <p className="text-pazza-dark">Updated 10 hours ago by user</p>
-            <p>Here are some tips on using Pazza effectively. </p>
+            <h2>{post.summary}</h2>
+            <p className="text-pazza-dark">Updated {calculateTimeDifference(post.updatedAt)} hours ago by user</p>
+            <p>{post.details}</p>
             <div className="wd-tags">
                 <div className="bg-pazza-accent text-pazza-primary py-1 px-2 rounded-2" style={{ width: "fit-content" }}>hw1</div>
             </div>
@@ -36,15 +42,23 @@ export default function Post() {
 
             <div>
                 <h5 className="mb-3 border-bottom border-top p-3 fw-bold"><RiChat3Line className="me-3" size={25} />2 Followup Discussions</h5>
-                <div className="p-3 border-bottom">
-                    <div className="mb-2 align-items-center d-flex"><Switch /><span className="ms-2 fw-bold">Resolved</span></div>
-                    <FaRegUserCircle className="me-2" size={30} />
-                    <span className="fw-bold">Username</span><span className="ms-3 text-pazza-dark">5 hours ago</span>
-                    <p className="mt-2">This is a follow-up discussion on the post.</p>
-                    <div className=""><BiLike className="me-2 text-pazza-primary" size={20} /> <span className="me-4 text-pazza-dark fw-bold">0</span></div>
-                </div>
+                {post.followUps?.map((followUp: any, index: number) => (
+                    <FollowUp key={index} followUp={followUp} />
+                ))}
             </div>
 
+        </div>
+    )
+}
+
+function FollowUp(followUp: any) {
+    return (
+        <div className="p-3 border-bottom">
+            <div className="mb-2 align-items-center d-flex"><Switch /><span className="ms-2 fw-bold">Resolved</span></div>
+            <FaRegUserCircle className="me-2" size={30} />
+            <span className="fw-bold">Username</span><span className="ms-3 text-pazza-dark">5 hours ago</span>
+            <p className="mt-2">This is a follow-up discussion on the post.</p>
+            <div className=""><BiLike className="me-2 text-pazza-primary" size={20} /> <span className="me-4 text-pazza-dark fw-bold">0</span></div>
         </div>
     );
 }
@@ -85,3 +99,12 @@ function Switch() {
         </button>
     );
 }
+
+
+function calculateTimeDifference(dateString: string) {
+    const postDate = new Date(dateString);
+    const currentDate = new Date();
+    const diffInMs = currentDate.getTime() - postDate.getTime();
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    return diffInHours;
+};

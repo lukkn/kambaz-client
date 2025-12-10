@@ -8,7 +8,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 import * as client from "./client";
 
-export default function NewPost() {
+export default function NewPost({ setNewPost }: { setNewPost: (value: boolean) => void }) {
 
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { cid } = useParams();
@@ -22,13 +22,13 @@ export default function NewPost() {
 
     const createPost = async (newPost: any) => {
         await client.createPazzaPost(newPost);
-        // handle post-creation logic
+        setNewPost(false);
     }
 
     return (
         <div className="">
             <div className="d-flex align-items-center mb-4">
-                <FaArrowLeft size={25} className="text-pazza-primary me-3" />
+                <FaArrowLeft size={25} className="text-pazza-primary me-3" role="button" onClick={() => setNewPost(false)} />
                 <FiPlusCircle size={25} />
                 <span className="ms-2 fw-bold">New Post</span>
             </div>
