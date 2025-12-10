@@ -21,6 +21,7 @@ export default function Pazza() {
     const [newPost, setNewPost] = useState(false);
     const [currentPost, setCurrentPost] = useState(null);
     const [folderId, setFolderId] = useState<string | null>(null);
+    const [isPostsExpanded, setIsPostsExpanded] = useState(true);
 
     const filterFolders = async () => {
         let posts;
@@ -54,7 +55,7 @@ export default function Pazza() {
 
     return (
         <div className="d-flex flex-row">
-            <Posts setNewPost={setNewPost} setCurrentPost={setCurrentPost} currentPost={currentPost} folderId={folderId} setFolderId={setFolderId} />
+            <Posts isPostsExpanded={isPostsExpanded} setIsPostsExpanded={setIsPostsExpanded} setNewPost={setNewPost} setCurrentPost={setCurrentPost} currentPost={currentPost} folderId={folderId} setFolderId={setFolderId} />
             <div className="flex-grow-1">
                 <Folders folderId={folderId} setFolderId={setFolderId} />
                 <div className="p-4">
