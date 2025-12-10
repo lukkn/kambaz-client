@@ -121,6 +121,8 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
 }
 
 function PostItem({ post, currentPost, setCurrentPost }: { post: any, currentPost: any, setCurrentPost: (post: any) => void }) {
+    const truncatedDetails = post.details?.length > 50 ? post.details.substring(0, 50) + '...' : post.details;
+    
     return (
         <div className={`p-3 border-bottom ${currentPost?._id === post._id ? "bg-pazza-light" : ""}`} role="button" onClick={() => setCurrentPost(post)} style={currentPost?._id === post._id ? { backgroundColor: '#f0f0f0' } : {}}>
             <div className="d-flex align-items-center gap-2 mb-1">
@@ -128,7 +130,7 @@ function PostItem({ post, currentPost, setCurrentPost }: { post: any, currentPos
                 <div className="fs-6 fw-bold">{post.summary}</div>
                 <div className="fs-6 ms-auto">{formatDate(post.createdAt)}</div>
             </div>
-            <div className="text-pazza-dark">{post.details}</div>
+            <div className="text-pazza-dark">{truncatedDetails}</div>
         </div>
     );
 }

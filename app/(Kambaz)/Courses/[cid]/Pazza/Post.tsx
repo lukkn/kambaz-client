@@ -39,11 +39,11 @@ function PostDetails({ post }: { post: any }) {
                 <FaRegBookmark className="me-4" size={30} />
                 <FaRegStar className="me-4" size={30} />
                 <FaLink className="me-4" size={30} />
-                <span className="float-end">23 views</span>
+                <span className="float-end">{post.views || 0} views</span>
             </div>
 
             <div>
-                <h5 className="mb-3 border-bottom border-top p-3 fw-bold"><RiChat3Line className="me-3" size={25} />2 Followup Discussions</h5>
+                <h5 className="mb-3 border-bottom border-top p-3 fw-bold"><RiChat3Line className="me-3" size={25} />{post.followUps?.length || 0} Followup Discussions</h5>
                 {post.followUps?.map((followUp: any, index: number) => (
                     <FollowUp key={index} followUp={followUp} />
                 ))}
