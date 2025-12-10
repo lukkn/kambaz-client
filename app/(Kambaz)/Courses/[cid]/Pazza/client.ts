@@ -6,6 +6,7 @@ const axiosWithCredentials = axios.create({
 
 export const HTTP_SERVER = process.env.NEXT_PUBLIC_HTTP_SERVER;
 export const PAZZA_API = `${HTTP_SERVER}/api/pazza`;
+export const PAZZA_FOLDERS_API = `${PAZZA_API}/folders`;
 
 export const createPazzaPost = async ( post: any ) => {
   const response = await axiosWithCredentials.post( PAZZA_API, post );
@@ -26,3 +27,26 @@ export const deletePazzaPost = async ( pid: string ) => {
   const response = await axiosWithCredentials.delete( `${PAZZA_API}/${pid}` );
   return response.data;
 };
+
+export const findPazzaFoldersByCourse = async ( cid: string ) => {
+  const response = await axiosWithCredentials.get( `${PAZZA_FOLDERS_API}/${cid}` );
+  return response.data;
+};
+
+export const createPazzaFolder = async ( cid: string, folderName: string ) => {
+  const folder = { course: cid, name: folderName };
+  console.log("Creating folder:", folder);
+  const response = await axiosWithCredentials.post( PAZZA_FOLDERS_API, folder);
+  return response.data;
+};
+
+export const updatePazzaFolder = async ( folder: any ) => {
+  const response = await axiosWithCredentials.put( `${PAZZA_FOLDERS_API}/${folder._id}`, folder);
+  return response.data;
+};
+
+export const deletePazzaFolders = async ( fids: string[] ) => {
+  const response = await axiosWithCredentials.delete( `${PAZZA_FOLDERS_API}/delete`, { data: fids });
+  return response.data;
+};
+
