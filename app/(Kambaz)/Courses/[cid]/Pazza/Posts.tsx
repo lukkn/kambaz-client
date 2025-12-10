@@ -4,11 +4,12 @@ import { Button } from "react-bootstrap";
 import { FiPlusCircle, FiMenu } from "react-icons/fi";
 import { IoSearch, IoClose } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { FaChevronDown, FaSquare } from "react-icons/fa6";
+import { FaChevronDown, FaChevronRight, FaSquare } from "react-icons/fa6";
 import { LuPin } from "react-icons/lu";
 import { VscTriangleLeft, VscTriangleRight } from "react-icons/vsc";
 
 import { useSelector } from "react-redux";
+import { useState } from "react";
 
 export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost, setCurrentPost, currentPost, folderId, setFolderId }: { isPostsExpanded: boolean, setIsPostsExpanded: (value: boolean) => void, setNewPost: (value: boolean) => void, setCurrentPost: (post: any) => void, currentPost: any, folderId: string | null, setFolderId: (id: string | null) => void }) {
 
@@ -17,6 +18,21 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
 
     // Categorize posts by date
     const categorizedPosts = categorizePosts(posts || []);
+    
+    // State for collapsed categories
+    const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
+    
+    const toggleCategory = (category: string) => {
+        setCollapsedCategories(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(category)) {
+                newSet.delete(category);
+            } else {
+                newSet.add(category);
+            }
+            return newSet;
+        });
+    };
 
     return (
         <div className="d-flex flex-row pt-3">
@@ -48,12 +64,12 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                         <div>
                             {categorizedPosts.pinned.length > 0 && (
                                 <div>
-                                    <div className="bg-pazza-light border">
-                                        <FaChevronDown className="m-2" />
+                                    <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('pinned')}>
+                                        {collapsedCategories.has('pinned') ? <FaChevronRight className="m-2" /> : <FaChevronDown className="m-2" />}
                                         Pinned
                                         <LuPin className="m-2 float-end" />
                                     </div>
-                                    {categorizedPosts.pinned.map((post: any) => (
+                                    {!collapsedCategories.has('pinned') && categorizedPosts.pinned.map((post: any) => (
                                         <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
                                     ))}
                                 </div>
@@ -61,11 +77,11 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                             
                             {categorizedPosts.today.length > 0 && (
                                 <div>
-                                    <div className="bg-pazza-light border">
-                                        <FaChevronDown className="m-2" />
+                                    <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('today')}>
+                                        {collapsedCategories.has('today') ? <FaChevronRight className="m-2" /> : <FaChevronDown className="m-2" />}
                                         Today
                                     </div>
-                                    {categorizedPosts.today.map((post: any) => (
+                                    {!collapsedCategories.has('today') && categorizedPosts.today.map((post: any) => (
                                         <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
                                     ))}
                                 </div>
@@ -73,11 +89,11 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                             
                             {categorizedPosts.yesterday.length > 0 && (
                                 <div>
-                                    <div className="bg-pazza-light border">
-                                        <FaChevronDown className="m-2" />
+                                    <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('yesterday')}>
+                                        {collapsedCategories.has('yesterday') ? <FaChevronRight className="m-2" /> : <FaChevronDown className="m-2" />}
                                         Yesterday
                                     </div>
-                                    {categorizedPosts.yesterday.map((post: any) => (
+                                    {!collapsedCategories.has('yesterday') && categorizedPosts.yesterday.map((post: any) => (
                                         <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
                                     ))}
                                 </div>
@@ -85,11 +101,11 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                             
                             {categorizedPosts.lastWeek.length > 0 && (
                                 <div>
-                                    <div className="bg-pazza-light border">
-                                        <FaChevronDown className="m-2" />
+                                    <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('lastWeek')}>
+                                        {collapsedCategories.has('lastWeek') ? <FaChevronRight className="m-2" /> : <FaChevronDown className="m-2" />}
                                         Last Week
                                     </div>
-                                    {categorizedPosts.lastWeek.map((post: any) => (
+                                    {!collapsedCategories.has('lastWeek') && categorizedPosts.lastWeek.map((post: any) => (
                                         <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
                                     ))}
                                 </div>
@@ -97,11 +113,11 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                             
                             {categorizedPosts.weeks.map((week: any) => (
                                 <div key={week.label}>
-                                    <div className="bg-pazza-light border">
-                                        <FaChevronDown className="m-2" />
+                                    <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory(week.label)}>
+                                        {collapsedCategories.has(week.label) ? <FaChevronRight className="m-2" /> : <FaChevronDown className="m-2" />}
                                         {week.label}
                                     </div>
-                                    {week.posts.map((post: any) => (
+                                    {!collapsedCategories.has(week.label) && week.posts.map((post: any) => (
                                         <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
                                     ))}
                                 </div>
