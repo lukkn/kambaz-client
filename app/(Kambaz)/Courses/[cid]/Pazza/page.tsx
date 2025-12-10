@@ -12,6 +12,7 @@ import { setFolders, setPosts } from "./reducer";
 import { useDispatch } from "react-redux";
 
 import * as client from "./client";
+import { current } from "@reduxjs/toolkit";
 
 export default function Pazza() {
 
@@ -52,6 +53,10 @@ export default function Pazza() {
         filterFolders();
     }, [folderId]);
 
+
+    useEffect(() => {
+        setNewPost(false);
+    }, [currentPost]);
 
     return (
         <div className="d-flex flex-row">

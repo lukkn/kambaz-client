@@ -27,7 +27,7 @@ function PostDetails({ post }: { post: any }) {
             </div>
             <h2>{post.summary}</h2>
             <p className="text-pazza-dark">Updated {calculateTimeDifference(post.updatedAt)} hours ago by {post.user.firstName} {post.user.lastName}</p>
-            <p>{post.details}</p>
+            <div dangerouslySetInnerHTML={{ __html: post.details || '' }} />
             <div className="wd-tags d-flex flex-wrap gap-2 mb-4">
                 {post.folders?.map((folder: any, index: number) => (
                     <div key={folder._id} className="bg-pazza-accent text-pazza-primary py-1 px-2 rounded-2" style={{ width: "fit-content" }}>{folder.name}</div>

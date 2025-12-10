@@ -6,6 +6,8 @@ import { useParams } from "next/navigation";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaArrowLeft } from "react-icons/fa6";
 
+import RichTextEditor from "./RichTextEditor";
+
 import * as client from "./client";
 
 export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value: boolean) => void, fetchPosts: () => void }) {
@@ -95,7 +97,7 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
             <input type="text" className="form-control mb-4" placeholder="Enter a one line summary, 100 characters or less" value={summary} onChange={(e) => setSummary(e.target.value)} />
 
             <div className="fw-bold mt-4 mb-2">Details</div>
-            <textarea className="form-control mb-4" rows={4} value={details} onChange={(e) => setDetails(e.target.value)} />
+            <RichTextEditor value={details} onChange={setDetails} />
 
             <div className="fw-bold mt-4 mb-2">Show my name as</div>
             <select className="form-select mb-4" value={showNameAs} onChange={(e) => setShowNameAs(e.target.value)}>
