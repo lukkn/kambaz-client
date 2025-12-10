@@ -59,6 +59,12 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
                 placeholder,
             });
 
+            const editorEl = editorRef.current.querySelector('.ql-editor') as HTMLElement | null;
+            if (editorEl) {
+                editorEl.style.fontSize = '16px';
+                editorEl.style.lineHeight = '1.6';
+            }
+
             quillRef.current = quill;
 
             const handleTextChange = () => {

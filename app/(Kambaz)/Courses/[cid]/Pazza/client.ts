@@ -55,3 +55,23 @@ export const deletePazzaFolders = async (fids: string[]) => {
   return response.data;
 };
 
+export const findPazzaFollowUpsByPost = async (pid: string) => {
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/followup/${pid}`);
+  return response.data;
+};
+
+export const createPazzaFollowUp = async (followUp: any) => {
+  const response = await axiosWithCredentials.post(`${PAZZA_API}/followup`, followUp);
+  return response.data;
+};
+
+export const updatePazzaFollowUp = async (followUp: any) => {
+  const response = await axiosWithCredentials.put(`${PAZZA_API}/followup/${followUp._id}`, followUp);
+  return response.data;
+};
+
+export const deletePazzaFollowUp = async (fid: string) => {
+  const response = await axiosWithCredentials.delete(`${PAZZA_API}/followup/${fid}`);
+  return response.data;
+};
+

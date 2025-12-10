@@ -12,7 +12,6 @@ import { setFolders, setPosts } from "./reducer";
 import { useDispatch } from "react-redux";
 
 import * as client from "./client";
-import { current } from "@reduxjs/toolkit";
 
 export default function Pazza() {
 
@@ -68,7 +67,7 @@ export default function Pazza() {
             <div className="flex-grow-1">
                 <Folders folderId={folderId} setFolderId={setFolderId} />
                 <div className="p-4">
-                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post post={currentPost} />}
+                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post post={currentPost} fetchPosts={fetchPosts}/>}
                 </div>
             </div>
         </div>
