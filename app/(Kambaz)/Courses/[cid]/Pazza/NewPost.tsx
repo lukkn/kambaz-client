@@ -22,12 +22,45 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
     const [showNameAs, setShowNameAs] = useState(`${currentUser?.firstName} ${currentUser?.lastName}`);
     const [folders, setFolders] = useState<Array<any>>([]);
     const [selectedFolders, setSelectedFolders] = useState<Array<string>>([]);
+    const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+    const [errors, setErrors] = useState<Array<string>>([]);
 
 
     const createPost = async (newPost: any) => {
         await client.createPazzaPost(newPost);
         fetchPosts();
         setNewPost(false);
+    }
+
+    const handleSubmit = async () => {
+        setAttemptedSubmit(true);
+        const validationErrors = [] as Array<string>;
+
+        if (!summary.trim()) { validationErrors.push("Summary is required."); }
+        if (selectedFolders.length === 0) { validationErrors.push("Select at least one folder."); }
+        if (!type) { validationErrors.push("Post type is required."); }
+        if (!postTo) { validationErrors.push("Post visibility is required."); }
+
+        if (validationErrors.length) {
+            setErrors(validationErrors);
+            return;
+        }
+
+        setErrors([]);
+
+        const newPost = {
+            type,
+            course: cid,
+            user: currentUser?._id,
+            summary,
+            details,
+            folders: selectedFolders,
+            isAnonymous: showNameAs === "ANONYMOUS",
+            visibility: postTo,
+
+        };
+        console.log("Creating post:", newPost);
+        await createPost(newPost);
     }
 
     const fetchFolders = async () => {
@@ -91,10 +124,21 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
                         <label className="form-check-label">{folder.name}</label>
                     </div>
                 ))}
+                {attemptedSubmit && selectedFolders.length === 0 && (
+                    <div className="invalid-feedback d-block">Select at least one folder.</div>
+                )}
             </div>
 
             <div className="fw-bold mt-4 mb-2">Summary*</div>
-            <input type="text" className="form-control mb-4" placeholder="Enter a one line summary, 100 characters or less" value={summary} onChange={(e) => setSummary(e.target.value)} />
+            <input
+                type="text"
+                className={`form-control mb-4 ${attemptedSubmit && !summary.trim() ? "is-invalid" : ""}`}
+                placeholder="Enter a one line summary, 100 characters or less"
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                required
+                aria-invalid={attemptedSubmit && !summary.trim()}
+            />
 
             <div className="fw-bold mt-4 mb-2">Details</div>
             <RichTextEditor value={details} onChange={setDetails} />
@@ -107,22 +151,13 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
 
             <div className="mb-4">* Required fields</div>
 
-            <button className="btn btn-pazza-primary"
-                onClick={() => {
-                    const newPost = {
-                        type,
-                        course: cid,
-                        user: currentUser?._id,
-                        summary,
-                        details,
-                        folders: selectedFolders,
-                        isAnonymous: showNameAs === "ANONYMOUS",
-                        visibility: postTo,
+            {errors.length > 0 && (
+                <div className="alert alert-danger" role="alert">
+                    {errors.map((error) => (<div key={error}>{error}</div>))}
+                </div>
+            )}
 
-                    };
-                    console.log("Creating post:", newPost);
-                    createPost(newPost);
-                }}>Post My Question</button>
+            <button className="btn btn-pazza-primary" onClick={handleSubmit}>Post My Question</button>
             <button className="btn btn-secondary ms-3">Save Draft</button>
             <button className="btn btn-secondary ms-3">Cancel</button>
 
