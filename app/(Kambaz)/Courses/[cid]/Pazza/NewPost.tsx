@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
 
@@ -18,12 +18,27 @@ export default function NewPost({ setNewPost }: { setNewPost: (value: boolean) =
     const [summary, setSummary] = useState("");
     const [details, setDetails] = useState("");
     const [showNameAs, setShowNameAs] = useState(`${currentUser?.firstName} ${currentUser?.lastName}`);
+    const [folders, setFolders] = useState<Array<any>>([]);
+    const [selectedFolders, setSelectedFolders] = useState<Array<string>>([]);
 
 
     const createPost = async (newPost: any) => {
         await client.createPazzaPost(newPost);
         setNewPost(false);
     }
+
+    const fetchFolders = async () => {
+        const folders = await client.findPazzaFoldersByCourse(cid as string);
+        setFolders(folders);
+    }
+
+    useEffect(() => {
+        fetchFolders();
+    }, []);
+
+    useEffect(() => {
+        console.log("Selected folders:", selectedFolders);
+    }, [selectedFolders]);
 
     return (
         <div className="">
@@ -59,6 +74,20 @@ export default function NewPost({ setNewPost }: { setNewPost: (value: boolean) =
 
             <div className="fw-bold mt-4 mb-2">Selected Folder(s)*</div>
             <div className="mb-4">
+                {folders.map((folder) => (
+                    <div className="form-check mb-2" key={folder._id}>
+                        <input type="checkbox" className="form-check-input me-2"
+                            checked={selectedFolders.includes(folder._id)}
+                            onChange={(e) => {
+                                if (e.target.checked) {
+                                    setSelectedFolders([...selectedFolders, folder._id]);
+                                } else {
+                                    setSelectedFolders(selectedFolders.filter((id) => id !== folder._id));
+                                }
+                            }} />
+                        <label className="form-check-label">{folder.name}</label>
+                    </div>
+                ))}
             </div>
 
             <div className="fw-bold mt-4 mb-2">Summary*</div>
@@ -83,6 +112,7 @@ export default function NewPost({ setNewPost }: { setNewPost: (value: boolean) =
                         user: currentUser?._id,
                         summary,
                         details,
+                        folders: selectedFolders,
                         isAnonymous: showNameAs === "ANONYMOUS",
                         visibility: postTo,
 

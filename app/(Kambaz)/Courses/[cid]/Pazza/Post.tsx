@@ -28,8 +28,10 @@ function PostDetails({ post }: { post: any }) {
             <h2>{post.summary}</h2>
             <p className="text-pazza-dark">Updated {calculateTimeDifference(post.updatedAt)} hours ago by user</p>
             <p>{post.details}</p>
-            <div className="wd-tags">
-                <div className="bg-pazza-accent text-pazza-primary py-1 px-2 rounded-2" style={{ width: "fit-content" }}>hw1</div>
+            <div className="wd-tags d-flex flex-wrap gap-2 mb-4">
+                {post.folders?.map((folder: any, index: number) => (
+                    <div key={folder._id} className="bg-pazza-accent text-pazza-primary py-1 px-2 rounded-2" style={{ width: "fit-content" }}>{folder.name}</div>
+                ))}
             </div>
 
             <div className="text-pazza-primary m-2 py-2">

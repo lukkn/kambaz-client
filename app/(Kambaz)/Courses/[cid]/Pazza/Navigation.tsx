@@ -24,7 +24,7 @@ export default function PazzaNavigation() {
                 <Link href={`/Courses/${cid}/Pazza`} style={{ color: 'white', textDecoration: pathname === `/Courses/${cid}/Pazza` ? 'underline' : 'none' }}>Q&A</Link>
             </div>
             <div className="me-2" role="button">
-                <Link href={`/Courses/${cid}/Pazza/ManageClass`} style={{ color: 'white', textDecoration: pathname === `/Courses/${cid}/Pazza/ManageClass` ? 'underline' : 'none' }}>Manage Class</Link></div>
+                <Link href={`/Courses/${cid}/Pazza/ManageClass`} style={{ color: 'white', textDecoration: pathname.includes(`/Courses/${cid}/Pazza/ManageClass`) ? 'underline' : 'none' }}>Manage Class</Link></div>
             <div className="me-2">
                 <FaRegUserCircle className="me-2" size={25} />
                 {currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'Guest'}

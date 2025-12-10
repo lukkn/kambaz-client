@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useSelector, useDispatch } from "react-redux";
+import { setFolders } from "../../reducer";
 
 import { Button } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa6";
@@ -12,14 +14,16 @@ import * as client from "../../client";
 export default function ManageFoldersPage() {
 
     const { cid } = useParams();
-    const [folders, setFolders] = useState<any[]>([]);
+    const { folders } = useSelector((state: any) => state.pazzaReducer);
+    const dispatch = useDispatch();
+
     const [folderName, setFolderName] = useState("");
     const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
     const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
 
     const fetchPazzaFolders = async () => {
         const folders = await client.findPazzaFoldersByCourse(cid as string);
-        setFolders(folders);
+        dispatch(setFolders(folders));
     }
 
     const createFolder = async (folderName: string) => {
@@ -73,7 +77,7 @@ export default function ManageFoldersPage() {
             <p>Delete folders or edit folder names.</p>
             <Button className="text-white bg-pazza-primary" disabled={selectedFolders.length === 0} onClick={() => deleteFolders(selectedFolders)}><FaTrash className="me-2" />Delete Selected Folders</Button>
             <hr />
-            {folders.map((folder) => (
+            {folders.map((folder: any) => (
                 <div key={folder._id} className="d-flex align-items-center mb-3">
                     <input type="checkbox" className="me-3" onChange={() => {
                         if (selectedFolders.includes(folder._id)) {
@@ -84,14 +88,14 @@ export default function ManageFoldersPage() {
                     }} />
                     {editingFolderId === folder._id ? (
                         <input type="text" className="form-control w-50" defaultValue={folder.name} onBlur={e => {
-                            const updatedFolder = { ...folder, name: e.target.value };  
+                            const updatedFolder = { ...folder, name: e.target.value };
                             updateFolder(updatedFolder);
                             setEditingFolderId(null);
                         }} />
                     ) : (
                         <span className="me-3 bg-pazza-accent px-2 py-1 rounded text-pazza-primary fw-bolder">{folder.name}</span>
                     )}
-                    <Button className="text-black bg-pazza-light ms-auto" onClick={() => setEditingFolderId(folder._id)}><MdEdit className="me-2"/>Edit</Button>
+                    <Button className="text-black bg-pazza-light ms-auto" onClick={() => setEditingFolderId(folder._id)}><MdEdit className="me-2" />Edit</Button>
                 </div>
             ))}
         </div>
