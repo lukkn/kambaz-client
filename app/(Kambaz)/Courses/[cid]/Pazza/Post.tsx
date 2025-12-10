@@ -26,7 +26,7 @@ function PostDetails({ post }: { post: any }) {
                 <span className="text-pazza-dark">@{post._id}</span>
             </div>
             <h2>{post.summary}</h2>
-            <p className="text-pazza-dark">Updated {calculateTimeDifference(post.updatedAt)} hours ago by user</p>
+            <p className="text-pazza-dark">Updated {calculateTimeDifference(post.updatedAt)} hours ago by {post.user.firstName} {post.user.lastName}</p>
             <p>{post.details}</p>
             <div className="wd-tags d-flex flex-wrap gap-2 mb-4">
                 {post.folders?.map((folder: any, index: number) => (

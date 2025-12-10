@@ -8,7 +8,7 @@ import { FaArrowLeft } from "react-icons/fa6";
 
 import * as client from "./client";
 
-export default function NewPost({ setNewPost }: { setNewPost: (value: boolean) => void }) {
+export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value: boolean) => void, fetchPosts: () => void }) {
 
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { cid } = useParams();
@@ -24,6 +24,7 @@ export default function NewPost({ setNewPost }: { setNewPost: (value: boolean) =
 
     const createPost = async (newPost: any) => {
         await client.createPazzaPost(newPost);
+        fetchPosts();
         setNewPost(false);
     }
 
