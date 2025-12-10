@@ -55,8 +55,12 @@ export default function Pazza() {
 
 
     useEffect(() => {
-        setNewPost(false);
+        if (currentPost) setNewPost(false);
     }, [currentPost]);
+
+    useEffect(() => {
+        setCurrentPost(null);
+    }, [newPost]);
 
     return (
         <div className="d-flex flex-row">

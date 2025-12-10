@@ -158,8 +158,8 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
             )}
 
             <button className="btn btn-pazza-primary" onClick={handleSubmit}>Post My Question</button>
-            <button className="btn btn-secondary ms-3">Save Draft</button>
-            <button className="btn btn-secondary ms-3">Cancel</button>
+            <button className="btn btn-secondary ms-3" disabled>Save Draft</button>
+            <button className="btn btn-secondary ms-3" onClick={() => setNewPost(false)}>Cancel</button>
 
         </div>
     );
