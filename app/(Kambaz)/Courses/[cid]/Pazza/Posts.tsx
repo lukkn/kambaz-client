@@ -2,17 +2,19 @@
 
 import { Button } from "react-bootstrap";
 import { FiPlusCircle, FiMenu } from "react-icons/fi";
-import { IoSearch } from "react-icons/io5";
+import { IoSearch, IoClose } from "react-icons/io5";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaChevronDown, FaSquare } from "react-icons/fa6";
 import { LuPin } from "react-icons/lu";
 
+
 import { useSelector } from "react-redux";
 
-export default function Posts({ setNewPost, setCurrentPost, currentPost }: { setNewPost: (value: boolean) => void, setCurrentPost: (post: any) => void, currentPost: any }) {
+export default function Posts({ setNewPost, setCurrentPost, currentPost, folderId, setFolderId }: { setNewPost: (value: boolean) => void, setCurrentPost: (post: any) => void, currentPost: any, folderId: string | null, setFolderId: (id: string | null) => void }) {
 
     const categories = ["PINNED", "TODAY", "YESTERDAY", "LAST WEEK", "EARLIER"];
     const { posts } = useSelector((state: any) => state.pazzaReducer);
+    const { folders } = useSelector((state: any) => state.pazzaReducer);
 
     return (
         <div className="p-3" style={{ width: '400px' }}>
@@ -30,7 +32,12 @@ export default function Posts({ setNewPost, setCurrentPost, currentPost }: { set
             <div className="border rounded-3 h-100">
                 <div className="text-pazza-primary">
                     <FiMenu className="m-3" />
-                    All Posts
+                    {folderId ?
+                        <div className="d-inline-flex align-items-center bg-pazza-primary text-white px-2 py-1 rounded-3">
+                            {folders?.find((f: any) => f._id === folderId)?.name}
+                            <IoClose className="ms-2" role="button" onClick={() => setFolderId(null)} />
+                        </div>
+                        : "All Posts"}
                     <BsThreeDotsVertical className="m-3 float-end" />
                 </div>
                 <div>

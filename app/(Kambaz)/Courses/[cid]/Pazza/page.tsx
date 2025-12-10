@@ -9,7 +9,7 @@ import Post from "./Post";
 import NewPost from "./NewPost";
 
 import { setFolders, setPosts } from "./reducer";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import * as client from "./client";
 
@@ -20,6 +20,17 @@ export default function Pazza() {
 
     const [newPost, setNewPost] = useState(false);
     const [currentPost, setCurrentPost] = useState(null);
+    const [folderId, setFolderId] = useState<string | null>(null);
+
+    const filterFolders = async () => {
+        let posts;
+        if (folderId) {
+            posts = await client.findPazzaPostsByCourse(cid as string, folderId as string);
+        } else {
+            posts = await client.findPazzaPostsByCourse(cid as string);
+        }
+        dispatch(setPosts(posts));
+    }
 
     const fetchPosts = async () => {
         const fetchedPosts = await client.findPazzaPostsByCourse(cid as string);
@@ -35,13 +46,17 @@ export default function Pazza() {
         fetchPosts();
         fetchFolders();
     }, []);
-    
+
+    useEffect(() => {
+        filterFolders();
+    }, [folderId]);
+
 
     return (
         <div className="d-flex flex-row">
-            <Posts setNewPost={setNewPost} setCurrentPost={setCurrentPost} currentPost={currentPost} />
+            <Posts setNewPost={setNewPost} setCurrentPost={setCurrentPost} currentPost={currentPost} folderId={folderId} setFolderId={setFolderId} />
             <div className="flex-grow-1">
-                <Folders />
+                <Folders folderId={folderId} setFolderId={setFolderId} />
                 <div className="p-4">
                     {newPost ? <NewPost setNewPost={setNewPost} /> : <Post post={currentPost} />}
                 </div>
