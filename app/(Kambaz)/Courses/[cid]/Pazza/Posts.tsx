@@ -12,9 +12,11 @@ import { useSelector } from "react-redux";
 
 export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost, setCurrentPost, currentPost, folderId, setFolderId }: { isPostsExpanded: boolean, setIsPostsExpanded: (value: boolean) => void, setNewPost: (value: boolean) => void, setCurrentPost: (post: any) => void, currentPost: any, folderId: string | null, setFolderId: (id: string | null) => void }) {
 
-    const categories = ["PINNED", "TODAY", "YESTERDAY", "LAST WEEK", "EARLIER"];
     const { posts } = useSelector((state: any) => state.pazzaReducer);
     const { folders } = useSelector((state: any) => state.pazzaReducer);
+
+    // Categorize posts by date
+    const categorizedPosts = categorizePosts(posts || []);
 
     return (
         <div className="d-flex flex-row pt-3">
@@ -44,19 +46,64 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                             <BsThreeDotsVertical className="m-3 float-end" />
                         </div>
                         <div>
-                            <div className="bg-pazza-light border">
-                                <FaChevronDown className="m-2" />
-                                Pinned
-                                <LuPin className="m-2 float-end" />
-                            </div>
-                            {posts?.map((post: any) => (
-                                <div key={post._id} className={`p-3 border-bottom ${currentPost?._id === post._id ? "bg-pazza-light" : ""}`} role="button" onClick={() => setCurrentPost(post)} style={currentPost?._id === post._id ? { backgroundColor: '#f0f0f0' } : {}}>
-                                    <div className="d-flex align-items-center gap-2 mb-1">
-                                        {(post.user.role === "FACULTY" || post.user.role === "TA") && <div className="bg-pazza-light p-1 rounded-2"><FaSquare color="#ffc008" className="me-2" />Instr</div>}
-                                        <div className="fs-6 fw-bold">{post.summary}</div>
-                                        <div className="fs-6 ms-auto">{formatDate(post.createdAt)}</div>
+                            {categorizedPosts.pinned.length > 0 && (
+                                <div>
+                                    <div className="bg-pazza-light border">
+                                        <FaChevronDown className="m-2" />
+                                        Pinned
+                                        <LuPin className="m-2 float-end" />
                                     </div>
-                                    <div className="text-pazza-dark">{post.details}</div>
+                                    {categorizedPosts.pinned.map((post: any) => (
+                                        <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {categorizedPosts.today.length > 0 && (
+                                <div>
+                                    <div className="bg-pazza-light border">
+                                        <FaChevronDown className="m-2" />
+                                        Today
+                                    </div>
+                                    {categorizedPosts.today.map((post: any) => (
+                                        <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {categorizedPosts.yesterday.length > 0 && (
+                                <div>
+                                    <div className="bg-pazza-light border">
+                                        <FaChevronDown className="m-2" />
+                                        Yesterday
+                                    </div>
+                                    {categorizedPosts.yesterday.map((post: any) => (
+                                        <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {categorizedPosts.lastWeek.length > 0 && (
+                                <div>
+                                    <div className="bg-pazza-light border">
+                                        <FaChevronDown className="m-2" />
+                                        Last Week
+                                    </div>
+                                    {categorizedPosts.lastWeek.map((post: any) => (
+                                        <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
+                                    ))}
+                                </div>
+                            )}
+                            
+                            {categorizedPosts.weeks.map((week: any) => (
+                                <div key={week.label}>
+                                    <div className="bg-pazza-light border">
+                                        <FaChevronDown className="m-2" />
+                                        {week.label}
+                                    </div>
+                                    {week.posts.map((post: any) => (
+                                        <PostItem key={post._id} post={post} currentPost={currentPost} setCurrentPost={setCurrentPost} />
+                                    ))}
                                 </div>
                             ))}
                         </div>
@@ -73,7 +120,84 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
     );
 }
 
+function PostItem({ post, currentPost, setCurrentPost }: { post: any, currentPost: any, setCurrentPost: (post: any) => void }) {
+    return (
+        <div className={`p-3 border-bottom ${currentPost?._id === post._id ? "bg-pazza-light" : ""}`} role="button" onClick={() => setCurrentPost(post)} style={currentPost?._id === post._id ? { backgroundColor: '#f0f0f0' } : {}}>
+            <div className="d-flex align-items-center gap-2 mb-1">
+                {(post.user.role === "FACULTY" || post.user.role === "TA") && <div className="bg-pazza-light p-1 rounded-2"><FaSquare color="#ffc008" className="me-2" />Instr</div>}
+                <div className="fs-6 fw-bold">{post.summary}</div>
+                <div className="fs-6 ms-auto">{formatDate(post.createdAt)}</div>
+            </div>
+            <div className="text-pazza-dark">{post.details}</div>
+        </div>
+    );
+}
+
 function formatDate(dateString: string) {
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, { year: '2-digit', month: '2-digit', day: '2-digit' });
+}
+
+function getWeekLabel(date: Date) {
+    const start = new Date(date);
+    start.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6); // End of week (Saturday)
+    
+    return `${start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
+}
+
+function categorizePosts(posts: any[]) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const lastWeekStart = new Date(today);
+    lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+    
+    const categorized = {
+        pinned: [] as any[],
+        today: [] as any[],
+        yesterday: [] as any[],
+        lastWeek: [] as any[],
+        weeks: [] as any[]
+    };
+    
+    const weekMap = new Map<string, any[]>();
+    
+    posts.forEach(post => {
+        const postDate = new Date(post.createdAt);
+        const postDateOnly = new Date(postDate.getFullYear(), postDate.getMonth(), postDate.getDate());
+        
+        if (post.pinned) {
+            categorized.pinned.push(post);
+        } else if (postDateOnly.getTime() === today.getTime()) {
+            categorized.today.push(post);
+        } else if (postDateOnly.getTime() === yesterday.getTime()) {
+            categorized.yesterday.push(post);
+        } else if (postDateOnly >= lastWeekStart && postDateOnly < yesterday) {
+            categorized.lastWeek.push(post);
+        } else {
+            // Older than last week - group by week
+            const weekLabel = getWeekLabel(postDate);
+            if (!weekMap.has(weekLabel)) {
+                weekMap.set(weekLabel, []);
+            }
+            weekMap.get(weekLabel)!.push(post);
+        }
+    });
+    
+    // Convert week map to sorted array
+    const sortedWeeks = Array.from(weekMap.entries())
+        .map(([label, posts]) => ({ label, posts }))
+        .sort((a, b) => {
+            // Sort by most recent week first
+            const dateA = new Date(a.posts[0].createdAt);
+            const dateB = new Date(b.posts[0].createdAt);
+            return dateB.getTime() - dateA.getTime();
+        });
+    
+    categorized.weeks = sortedWeeks;
+    
+    return categorized;
 }
