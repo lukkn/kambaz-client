@@ -67,7 +67,7 @@ export default function Pazza() {
             <div className="flex-grow-1">
                 <Folders folderId={folderId} setFolderId={setFolderId} />
                 <div className="p-4">
-                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post post={currentPost} fetchPosts={fetchPosts}/>}
+                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post post={currentPost}/>}
                 </div>
             </div>
         </div>

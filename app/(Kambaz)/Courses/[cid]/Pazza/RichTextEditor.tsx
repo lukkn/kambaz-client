@@ -18,6 +18,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
     ({ value, onChange, placeholder = 'Write something...' }, ref) => {
         const editorRef = useRef<HTMLDivElement>(null);
         const quillRef = useRef<Quill | null>(null);
+        const isInternalChange = useRef(false);
 
         const removeExistingToolbar = () => {
             const editorEl = editorRef.current;
@@ -68,6 +69,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
             quillRef.current = quill;
 
             const handleTextChange = () => {
+                isInternalChange.current = true;
                 onChange(quill.root.innerHTML);
             };
 
@@ -94,9 +96,18 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
                 return;
             }
 
+            // Only update content if this is an external change, not from user input
+            if (isInternalChange.current) {
+                isInternalChange.current = false;
+                return;
+            }
+
             const currentHtml = quill.root.innerHTML;
             if (value !== currentHtml) {
                 quill.clipboard.dangerouslyPasteHTML(value || '');
+                // Move cursor to the end of the content
+                const length = quill.getLength();
+                quill.setSelection(length, 0);
             }
         }, [value]);
 
