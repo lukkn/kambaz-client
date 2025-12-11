@@ -31,10 +31,6 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
                 maybeToolbarBefore.remove();
             }
 
-            const maybeToolbarAfter = editorEl.nextSibling as HTMLElement | null;
-            if (maybeToolbarAfter && maybeToolbarAfter.classList?.contains('ql-toolbar')) {
-                maybeToolbarAfter.remove();
-            }
         };
 
         useEffect(() => {
@@ -64,6 +60,11 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
             if (editorEl) {
                 editorEl.style.fontSize = '16px';
                 editorEl.style.lineHeight = '1.6';
+
+                        const toolbarEl = editorRef.current.parentElement?.querySelector('.ql-toolbar') as HTMLElement | null;
+                        if (toolbarEl) {
+                            toolbarEl.style.backgroundColor = 'white';
+                        }
             }
 
             quillRef.current = quill;
@@ -120,7 +121,7 @@ const RichTextEditor = forwardRef<RichTextEditorHandle, RichTextEditorProps>(
             },
         }));
 
-        return <div ref={editorRef} style={{ minHeight: '300px' }} />;
+        return <div ref={editorRef} style={{ minHeight: '300px', backgroundColor: 'white' }} />;
     }
 );
 

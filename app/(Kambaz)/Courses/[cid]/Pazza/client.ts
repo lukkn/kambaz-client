@@ -13,15 +13,20 @@ export const createPazzaPost = async (post: any) => {
   return response.data;
 };
 
-export const findPazzaPostsByCourse = async (cid: string, fid?: any) => {
-  if (!fid) {
-    const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}`);
-    return response.data;
-  } else {
-    const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}/folder/${fid}`);
-    return response.data;
-  }
+export const findPazzaPostsByCourse = async (cid: string) => {
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}`);
+  return response.data;
 };
+
+export const findCoursePazzaPostByFolder = async (cid: string, fid: string) => {
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/course/${cid}/folder/${fid}`);
+  return response.data;
+}
+
+export const findPazzaPostById = async (pid: string) => {
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/post/${pid}`);
+  return response.data;
+}
 
 export const updatePazzaPost = async (post: any) => {
   const response = await axiosWithCredentials.put(`${PAZZA_API}/${post._id}`, post);

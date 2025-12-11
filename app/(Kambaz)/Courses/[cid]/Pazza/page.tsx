@@ -26,7 +26,7 @@ export default function Pazza() {
     const filterFolders = async () => {
         let posts;
         if (folderId) {
-            posts = await client.findPazzaPostsByCourse(cid as string, folderId as string);
+            posts = await client.findCoursePazzaPostByFolder(cid as string, folderId as string);
         } else {
             posts = await client.findPazzaPostsByCourse(cid as string);
         }
@@ -67,7 +67,7 @@ export default function Pazza() {
             <div className="flex-grow-1">
                 <Folders folderId={folderId} setFolderId={setFolderId} />
                 <div className="p-4">
-                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post post={currentPost}/>}
+                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post postId={currentPost?._id || null} />}
                 </div>
             </div>
         </div>
