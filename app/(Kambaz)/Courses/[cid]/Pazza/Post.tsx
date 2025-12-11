@@ -22,6 +22,10 @@ export default function Post({ postId }: { postId: string | null }) {
         if (!postId) return null;
         const post = await client.findPazzaPostById(postId);
         setPost(post);
+        await client.updatePazzaPost({
+            ...post,
+            views: (post.views || 0) + 1,
+        });
     }
 
     useEffect(() => {
