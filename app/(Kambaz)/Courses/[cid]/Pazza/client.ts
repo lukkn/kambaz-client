@@ -75,3 +75,13 @@ export const deletePazzaFollowUp = async (fid: string) => {
   return response.data;
 };
 
+export const createNestedPazzaFollowUp = async (parentId: string, followUp: any) => {
+  const response = await axiosWithCredentials.post(`${PAZZA_API}/followup/nested/${parentId}`, followUp);
+  return response.data;
+};
+
+
+export const findFollowUpsById = async (fids: string[]) => {
+  const response = await axiosWithCredentials.post(`${PAZZA_API}/followup/batch`, fids);
+  return response.data;
+};
