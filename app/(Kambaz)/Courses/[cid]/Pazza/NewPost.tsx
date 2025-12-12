@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 import { FiPlusCircle } from "react-icons/fi";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -14,7 +15,7 @@ import * as client from "./client";
 import * as courseClient from "../../client";
 import { read } from "fs";
 
-export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value: boolean) => void, fetchPosts: () => void }) {
+export default function NewPost({ setNewPost, fetchPosts, setCurrentPost }: { setNewPost: (value: boolean) => void, fetchPosts: () => void, setCurrentPost: (post: any) => void }) {
 
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const { cid } = useParams();
@@ -35,9 +36,10 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
     const [postTo, setPostTo] = useState("ALL");
 
     const createPost = async (newPost: any) => {
-        await client.createPazzaPost(newPost);
+        const post = await client.createPazzaPost(newPost);
         fetchPosts();
         setNewPost(false);
+        return post;
     }
 
     const handleSubmit = async () => {
@@ -68,7 +70,8 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
             isAnonymous: showNameAs === "ANONYMOUS",
         };
         console.log("Creating post:", newPost);
-        await createPost(newPost);
+        const post = await createPost(newPost);
+        setCurrentPost(post);
     }
 
     const fetchFolders = async () => {
@@ -80,7 +83,6 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
         const users = await courseClient.findUsersForCourse(cid as string);
         setUsers(users);
     }
-
 
     useEffect(() => {
         fetchUsers();
@@ -108,10 +110,6 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
                 <div className="form-check mb-2">
                     <input type="radio" name="postType" id="note" value="NOTE" className="form-check-input me-2" checked={type === "NOTE"} onChange={(e) => setType(e.target.value)} />
                     <label className="form-check-label" htmlFor="note">Note</label>
-                </div>
-                <div className="form-check mb-2">
-                    <input type="radio" name="postType" id="poll" value="POLL" className="form-check-input me-2" checked={type === "POLL"} onChange={(e) => setType(e.target.value)} />
-                    <label className="form-check-label" htmlFor="poll">Poll/In-Class Response</label>
                 </div>
             </div>
 
@@ -141,11 +139,30 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
                             Select users
                         </DropdownToggle>
                         <DropdownMenu>
-                            <DropdownItem onClick={() => setVisibilityCategory("INSTRUCTORS")}>All Instructors</DropdownItem>
+                            <DropdownItem
+                                onClick={() => {
+                                    if (visibilityCategory !== "INSTRUCTORS") setVisibilityCategory("INSTRUCTORS");
+                                }}
+                                disabled={visibilityCategory === "INSTRUCTORS"}
+                            >
+                                All Instructors{visibilityCategory === "INSTRUCTORS" && " (Selected)"}
+                            </DropdownItem>
                             {
-                                users.map((user) => (
-                                    <DropdownItem key={user._id} onClick={() => { setSpecificViewers([...specificViewers, user]) }}>{user.firstName} {user.lastName}</DropdownItem>
-                                ))
+                                users.map((user) => {
+                                    const alreadySelected = specificViewers.some((u) => u._id === user._id);
+                                    return (
+                                        <DropdownItem
+                                            key={user._id}
+                                            onClick={() => {
+                                                if (!alreadySelected) setSpecificViewers([...specificViewers, user]);
+                                            }}
+                                            disabled={alreadySelected}
+                                        >
+                                            {user.firstName} {user.lastName}
+                                            {alreadySelected && " (Selected)"}
+                                        </DropdownItem>
+                                    );
+                                })
                             }
                         </DropdownMenu>
                     </Dropdown>
@@ -168,25 +185,32 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
 
 
             <div className="fw-bold mt-4 mb-2">Selected Folder(s)*</div>
-            <div className="mb-4">
-                {folders.map((folder) => (
-                    <div className="form-check mb-2" key={folder._id}>
-                        <input type="checkbox" className="form-check-input me-2"
-                            checked={selectedFolders.includes(folder._id)}
-                            onChange={(e) => {
-                                if (e.target.checked) {
-                                    setSelectedFolders([...selectedFolders, folder._id]);
-                                } else {
+            <div className="mb-2 d-flex flex-wrap gap-3">
+                {folders.map((folder) => {
+                    const isSelected = selectedFolders.includes(folder._id);
+                    return (
+                        <div
+                            key={folder._id}
+                            role="button"
+                            className={`px-2 py-1 rounded-2 ${isSelected ? "bg-pazza-primary text-white" : "bg-pazza-accent text-pazza-primary"}`}
+                            onClick={() => {
+                                if (isSelected) {
                                     setSelectedFolders(selectedFolders.filter((id) => id !== folder._id));
+                                } else {
+                                    setSelectedFolders([...selectedFolders, folder._id]);
                                 }
-                            }} />
-                        <label className="form-check-label">{folder.name}</label>
-                    </div>
-                ))}
+                            }}
+                        >
+                            {folder.name}
+                        </div>
+                    );
+                })}
+
                 {attemptedSubmit && selectedFolders.length === 0 && (
-                    <div className="invalid-feedback d-block">Select at least one folder.</div>
+                    <div className="invalid-feedback d-block w-100">Select at least one folder.</div>
                 )}
             </div>
+            <Link href="Pazza/ManageClass/ManageFolders" className="mb-4 text-pazza-primary">Manage folders</Link>
 
             <div className="fw-bold mt-4 mb-2">Summary*</div>
             <input
@@ -197,6 +221,7 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
                 onChange={(e) => setSummary(e.target.value)}
                 required
                 aria-invalid={attemptedSubmit && !summary.trim()}
+                maxLength={100}
             />
 
             <div className="fw-bold mt-4 mb-2">Details</div>

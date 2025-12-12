@@ -53,14 +53,10 @@ export default function Pazza() {
         filterFolders();
     }, [folderId]);
 
-
     useEffect(() => {
         if (currentPost) setNewPost(false);
+        console.log("Current Post changed:", currentPost);
     }, [currentPost]);
-
-    useEffect(() => {
-        setCurrentPost(null);
-    }, [newPost]);
 
     return (
         <div className="d-flex flex-row">
@@ -68,7 +64,7 @@ export default function Pazza() {
             <div className="flex-grow-1">
                 <Folders folderId={folderId} setFolderId={setFolderId} />
                 <div className="p-4" style={{ height: 'calc(100vh - 210px)', overflowY: 'auto' }}>
-                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post postId={currentPost?._id || null} setCurrentPost={setCurrentPost} />}
+                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} setCurrentPost={setCurrentPost} /> : <Post postId={currentPost?._id || null} setCurrentPost={setCurrentPost} />}
                 </div>
             </div>
         </div>

@@ -35,19 +35,8 @@ export default function Posts({
     const { posts } = useSelector((state: any) => state.pazzaReducer);
     const { folders } = useSelector((state: any) => state.pazzaReducer);
 
-    // Search state
-    const [search, setSearch] = useState("");
-    // Filter posts by search input (case-insensitive)
-    const filteredPosts = (posts || []).filter((post: any) => {
-        if (!search) return true;
-        const searchLower = search.toLowerCase();
-        return (
-            (post.summary && post.summary.toLowerCase().includes(searchLower)) ||
-            (post.details && post.details.toLowerCase().includes(searchLower))
-        );
-    });
-    // Categorize filtered posts by date
-    const categorizedPosts = categorizePosts(filteredPosts);
+    // Categorize posts by date
+    const categorizedPosts = categorizePosts(posts || []);
 
     // State for collapsed categories
     const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
@@ -67,7 +56,7 @@ export default function Posts({
     return (
         <div className="d-flex flex-row pt-3" style={{ height: 'calc(100vh - 180px)' }}>
             {isPostsExpanded && (
-                <div className="ps-3 d-flex flex-column" style={{ height: '100%' }}>
+                <div className="ps-3 d-flex flex-column" style={{ width: '420px', height: '100%' }}>
                     <div className="d-flex flex-row gap-2 mb-3">
                         <Button className="w-50 bg-pazza-primary text-white d-flex align-items-center justify-content-center border-0"
                             onClick={() => setNewPost(true)}>
@@ -77,13 +66,7 @@ export default function Posts({
 
                         <div className="d-flex align-items-center justify-content-center gap-2 border px-2 rounded-3">
                             <IoSearch />
-                            <input
-                                type="text"
-                                placeholder="Search posts..."
-                                className="form-control border-0 shadow-none p-0"
-                                value={search}
-                                onChange={e => setSearch(e.target.value)}
-                            />
+                            <input type="text" placeholder="Search posts..." className="form-control border-0 shadow-none p-0" />
                         </div>
                     </div>
                     <div className="border rounded-3 flex-grow-1 d-flex flex-column" style={{ minHeight: 0 }}>
