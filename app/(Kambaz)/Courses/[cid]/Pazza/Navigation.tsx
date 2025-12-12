@@ -23,12 +23,17 @@ export default function PazzaNavigation() {
             <div className="ms-auto me-2" role="button">
                 <Link href={`/Courses/${cid}/Pazza`} style={{ color: 'white', textDecoration: pathname === `/Courses/${cid}/Pazza` ? 'underline' : 'none' }}>Q&A</Link>
             </div>
-            <div className="me-2" role="button">
-                <Link href={`/Courses/${cid}/Pazza/ManageClass`} style={{ color: 'white', textDecoration: pathname.includes(`/Courses/${cid}/Pazza/ManageClass`) ? 'underline' : 'none' }}>Manage Class</Link></div>
+            {(currentUser?.role === 'FACULTY' || currentUser?.role === 'TA') && (
+                <div className="me-2" role="button">
+                    <Link href={`/Courses/${cid}/Pazza/ManageClass`} style={{ color: 'white', textDecoration: pathname.includes(`/Courses/${cid}/Pazza/ManageClass`) ? 'underline' : 'none' }}>Manage Class</Link>
+                </div>
+            )}
             <div className="me-2">
+
                 <FaRegUserCircle className="me-2" size={25} />
                 {currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : 'Guest'}
             </div>
+
         </div>
     );
 }
