@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { setFolders } from "../../reducer";
@@ -20,6 +20,7 @@ export default function ManageFoldersPage() {
     const [folderName, setFolderName] = useState("");
     const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
     const [editingFolderId, setEditingFolderId] = useState<string | null>(null);
+    const [editingFolderName, setEditingFolderName] = useState<string>("");
 
     const fetchPazzaFolders = async () => {
         const folders = await client.findPazzaFoldersByCourse(cid as string);
@@ -87,15 +88,45 @@ export default function ManageFoldersPage() {
                         }
                     }} />
                     {editingFolderId === folder._id ? (
-                        <input type="text" className="form-control w-50" defaultValue={folder.name} onBlur={e => {
-                            const updatedFolder = { ...folder, name: e.target.value };
-                            updateFolder(updatedFolder);
-                            setEditingFolderId(null);
-                        }} />
+                        <>
+                            <input
+                                type="text"
+                                className="form-control w-50"
+                                value={editingFolderName}
+                                onChange={e => setEditingFolderName(e.target.value)}
+                            />
+                            <div className="ms-auto d-flex gap-2">
+                                <Button
+                                    className="text-white bg-pazza-primary"
+                                    onClick={() => {
+                                        const updatedFolder = { ...folder, name: editingFolderName };
+                                        updateFolder(updatedFolder);
+                                        setEditingFolderId(null);
+                                        setEditingFolderName("");
+                                    }}
+                                >
+                                    Save
+                                </Button>
+                                <Button
+                                    className="text-black bg-pazza-light"
+                                    onClick={() => {
+                                        setEditingFolderId(null);
+                                        setEditingFolderName("");
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                            </div>
+                        </>
                     ) : (
-                        <span className="me-3 bg-pazza-accent px-2 py-1 rounded text-pazza-primary fw-bolder">{folder.name}</span>
+                        <>
+                            <span className="me-3 bg-pazza-accent px-2 py-1 rounded text-pazza-primary fw-bolder">{folder.name}</span>
+                            <Button className="text-black bg-pazza-light ms-auto" onClick={() => {
+                                setEditingFolderId(folder._id);
+                                setEditingFolderName(folder.name);
+                            }}><MdEdit className="me-2" />Edit</Button>
+                        </>
                     )}
-                    <Button className="text-black bg-pazza-light ms-auto" onClick={() => setEditingFolderId(folder._id)}><MdEdit className="me-2" />Edit</Button>
                 </div>
             ))}
         </div>
