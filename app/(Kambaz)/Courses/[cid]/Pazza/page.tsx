@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useParams } from "next/navigation";
 
 import Folders from "./Folders";
@@ -9,7 +9,7 @@ import Post from "./Post";
 import NewPost from "./NewPost";
 
 import { setFolders, setPosts } from "./reducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import * as client from "./client";
 
@@ -17,6 +17,7 @@ export default function Pazza() {
 
     const dispatch = useDispatch();
     const { cid } = useParams();
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     const [newPost, setNewPost] = useState(false);
     const [currentPost, setCurrentPost] = useState(null);
@@ -26,15 +27,15 @@ export default function Pazza() {
     const filterFolders = async () => {
         let posts;
         if (folderId) {
-            posts = await client.findCoursePazzaPostByFolder(cid as string, folderId as string);
+            posts = await client.findCoursePazzaPostByFolder(cid as string, folderId as string, currentUser.role, currentUser._id);
         } else {
-            posts = await client.findPazzaPostsByCourse(cid as string);
+            posts = await client.findPazzaPostsByCourse(cid as string, currentUser.role, currentUser._id);
         }
         dispatch(setPosts(posts));
     }
 
     const fetchPosts = async () => {
-        const fetchedPosts = await client.findPazzaPostsByCourse(cid as string);
+        const fetchedPosts = await client.findPazzaPostsByCourse(cid as string, currentUser.role, currentUser._id);
         dispatch(setPosts(fetchedPosts));
     };
 

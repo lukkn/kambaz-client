@@ -13,13 +13,13 @@ export const createPazzaPost = async (post: any) => {
   return response.data;
 };
 
-export const findPazzaPostsByCourse = async (cid: string) => {
-  const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}`);
+export const findPazzaPostsByCourse = async (cid: string, role: string, userId: string) => {
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}/${role}/${userId}`);
   return response.data;
 };
 
-export const findCoursePazzaPostByFolder = async (cid: string, fid: string) => {
-  const response = await axiosWithCredentials.get(`${PAZZA_API}/course/${cid}/folder/${fid}`);
+export const findCoursePazzaPostByFolder = async (cid: string, fid: string, role: string, userId: string) => {
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/course/${cid}/folder/${fid}/${role}/${userId}`);
   return response.data;
 }
 
