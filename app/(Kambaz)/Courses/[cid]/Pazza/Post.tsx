@@ -11,7 +11,7 @@ import { MdErrorOutline } from "react-icons/md";
 import { TbUserEdit } from "react-icons/tb";
 import { CgNotes } from "react-icons/cg";
 import { BiLike } from "react-icons/bi";
-import { Button } from "react-bootstrap";
+import { Button, Dropdown, DropdownToggle, DropdownItem, DropdownMenu } from "react-bootstrap";
 
 import FollowUps from "./FollowUps";
 import RichTextEditor from "./RichTextEditor";
@@ -20,6 +20,7 @@ import { calculateTimeDifference } from "../../../../utils";
 
 import * as client from "./client";
 import * as enrollmentClient from "../client";
+import { current } from "@reduxjs/toolkit";
 
 export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: string | null, setCurrentPost: (post: any) => void, fetchPosts: () => void }) {
     const [post, setPost] = useState<any>(null);
@@ -196,7 +197,7 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
                             <Button variant="light" className="border" onClick={() => setShowActions(!showActions)}>
                                 Actions <VscTriangleDown className="ms-2" />
                             </Button>
-                            <div className={`position-absolute bg-white rounded-2 mt-2 px-4 py-2 d-flex flex-column gap-2 end-0 ${showActions ? "" : "d-none"}`} onMouseLeave={() => setShowActions(false)} style={{zIndex: 10}}>
+                            <div className={`position-absolute bg-white rounded-2 mt-2 px-4 py-2 d-flex flex-column gap-2 end-0 ${showActions ? "" : "d-none"}`} onMouseLeave={() => setShowActions(false)} style={{ zIndex: 10 }}>
                                 <div role="button" onClick={() => { setEditMode(true); setShowActions(false); }}>Edit</div>
                                 <div role="button" className="text-danger" onClick={handleDeletePost}>Delete</div>
                             </div>
@@ -257,14 +258,14 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
         const [studentAnswerDraft, setStudentAnswerDraft] = useState("");
         const [instructorAnswerDraft, setInstructorAnswerDraft] = useState("");
 
-        const hasStudentAnswer = post.studentAnswer;
-        const hasInstructorAnswer = post.instructorAnswer;
+        const hasStudentAnswer = post.studentAnswer.content;
+        const hasInstructorAnswer = post.instructorAnswer.content;
 
         const showStudentAnswer = hasStudentAnswer || currentUser?.role === "STUDENT";
         const showInstructorAnswer = hasInstructorAnswer || currentUser?.role !== "STUDENT";
 
         const openStudentEditor = () => {
-            setStudentAnswerDraft(post.studentAnswer || "");
+            setStudentAnswerDraft(post.studentAnswer.content || "");
             setIsStudentEditorOpen(true);
         };
 
@@ -281,7 +282,10 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
 
             await client.updatePazzaPost({
                 ...post,
-                studentAnswer: studentAnswerDraft,
+                studentAnswer: {
+                    user: currentUser._id,
+                    content: studentAnswerDraft,
+                }
             });
 
             fetchPost();
@@ -294,7 +298,7 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
         };
 
         const openInstructorEditor = () => {
-            setInstructorAnswerDraft(post.instructorAnswer || "");
+            setInstructorAnswerDraft(post.instructorAnswer.content || "");
             setIsInstructorEditorOpen(true);
         };
 
@@ -310,7 +314,10 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
         const handleSubmitInstructorAnswer = async () => {
             await client.updatePazzaPost({
                 ...post,
-                instructorAnswer: instructorAnswerDraft,
+                instructorAnswer: {
+                    user: currentUser._id,
+                    content: instructorAnswerDraft,
+                }
             });
 
             fetchPost();
@@ -328,8 +335,29 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
                     <div className="bg-pazza-success p-3 border-top d-flex gap-3">
                         <div className="bg-pazza-success-dark text-white fw-bold rounded-3 d-flex align-items-center justify-content-center" style={{ width: "25px", height: "25px" }}>S</div>
                         <div className="mb-2 flex-grow-1">
+                            <Dropdown className="float-end">
+                                <DropdownToggle variant="light" className="border" style={{ zIndex: 11 }}>
+                                    Actions
+                                </DropdownToggle>
+                                <DropdownMenu className={`position-absolute bg-white rounded-2 mt-2 px-4 py-2 d-flex flex-column gap-2 end-0`} style={{ zIndex: 10 }}>
+                                    <DropdownItem role="button" onClick={() => { openStudentEditor(); }}>
+                                        Edit
+                                    </DropdownItem>
+                                    <DropdownItem role="button" className="text-danger" onClick={async () => {
+                                        if (!confirm("Delete student answer? This cannot be undone.")) return;
+                                        await client.updatePazzaPost({
+                                            ...post,
+                                            studentAnswer: { user: null, content: "" }
+                                        });
+                                        fetchPost();
+                                    }}>Delete</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
                             <div className="fs-5 fw-bold">Students' Answer</div>
-                            <p className="text-black-50" style={{ fontSize: "0.8rem" }}>Where students collectively construct a single answer</p>
+                            {hasStudentAnswer ?
+                                <p className="text-black-50" style={{ fontSize: "0.8rem" }}>Updated {calculateTimeDifference(post.studentAnswer.updatedAt)} by {post.studentAnswer.user?.firstName} {post.studentAnswer.user?.lastName}</p>
+                                : <p className="text-black-50" style={{ fontSize: "0.8rem" }}>Where students collectively construct a single answer</p>
+                            }
                             {isStudentEditorOpen ? (
                                 <div>
                                     <RichTextEditor
@@ -345,7 +373,7 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
                             ) : (
                                 <>
                                     {hasStudentAnswer ? (
-                                        <div dangerouslySetInnerHTML={{ __html: post.studentAnswer }} />
+                                        <div dangerouslySetInnerHTML={{ __html: post.studentAnswer.content }} />
                                     ) : (
                                         <input
                                             type="text"
@@ -358,7 +386,7 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
                                     )}
                                     {(hasStudentAnswer && currentUser.role === "STUDENT") && (
                                         <div className="d-flex mt-2">
-                                            <Button size="sm" variant="light" className="border" onClick={handleEditStudentAnswer}>Edit</Button>
+                                            {/* Edit moved into dropdown */}
                                         </div>
                                     )}
                                 </>
@@ -369,10 +397,35 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
 
                 {showInstructorAnswer && (
                     <div className="bg-pazza-warning p-3 border-top d-flex gap-3">
+
                         <div className="bg-pazza-warning-dark text-white fw-bold rounded-3 d-flex align-items-center justify-content-center" style={{ width: "25px", height: "25px" }}>i</div>
                         <div className="mb-2 flex-grow-1">
+                            {currentUser.role !== "STUDENT" &&
+                                <Dropdown className="float-end">
+                                    <DropdownToggle variant="light" className="border" style={{ zIndex: 11 }} >
+                                        Actions
+                                    </DropdownToggle>
+                                    <DropdownMenu className={`position-absolute bg-white rounded-2 mt-2 px-4 py-2 d-flex flex-column gap-2 end-0`} style={{ zIndex: 10 }}>
+                                        <DropdownItem role="button" onClick={() => { openInstructorEditor(); }}>
+                                            Edit
+                                        </DropdownItem>
+                                        <DropdownItem role="button" className="text-danger" onClick={async () => {
+                                            await client.updatePazzaPost({
+                                                ...post,
+                                                instructorAnswer: { user: null, content: "" }
+                                            });
+                                            fetchPost();
+                                        }}>Delete</DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
+                            }
                             <div className="fs-5 fw-bold">Instructors' Answer</div>
-                            <p className="text-black-50" style={{ fontSize: "0.8rem" }}>Where instructors collectively construct a single answer</p>
+                            {hasInstructorAnswer ?
+                                <p className="text-black-50" style={{ fontSize: "0.8rem" }}>Updated {calculateTimeDifference(post.instructorAnswer.updatedAt)} by {post.instructorAnswer.user?.firstName} {post.instructorAnswer.user?.lastName}</p>
+                                :
+                                <p className="text-black-50" style={{ fontSize: "0.8rem" }}>Where instructors collectively construct a single answer</p>
+                            }
+
                             {isInstructorEditorOpen ? (
                                 <div>
                                     <RichTextEditor
@@ -388,7 +441,7 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
                             ) : (
                                 <>
                                     {hasInstructorAnswer ? (
-                                        <div dangerouslySetInnerHTML={{ __html: post.instructorAnswer }} />
+                                        <div dangerouslySetInnerHTML={{ __html: post.instructorAnswer.content }} />
                                     ) : (
                                         <input
                                             type="text"
@@ -401,7 +454,7 @@ export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: s
                                     )}
                                     {(hasInstructorAnswer && currentUser.role !== "STUDENT") && (
                                         <div className="d-flex mt-2">
-                                            <Button size="sm" variant="light" className="border" onClick={handleEditInstructorAnswer}>Edit</Button>
+                                            {/* Edit moved into dropdown */}
                                         </div>
                                     )}
                                 </>
