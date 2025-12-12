@@ -20,7 +20,7 @@ export default function Pazza() {
     const { currentUser } = useSelector((state: any) => state.accountReducer);
 
     const [newPost, setNewPost] = useState(false);
-    const [currentPost, setCurrentPost] = useState(null);
+    const [currentPost, setCurrentPost] = useState<any>(null);
     const [folderId, setFolderId] = useState<string | null>(null);
     const [isPostsExpanded, setIsPostsExpanded] = useState(true);
 
@@ -67,8 +67,8 @@ export default function Pazza() {
             <Posts isPostsExpanded={isPostsExpanded} setIsPostsExpanded={setIsPostsExpanded} setNewPost={setNewPost} setCurrentPost={setCurrentPost} currentPost={currentPost} folderId={folderId} setFolderId={setFolderId} />
             <div className="flex-grow-1">
                 <Folders folderId={folderId} setFolderId={setFolderId} />
-                <div className="p-4">
-                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post postId={currentPost?._id || null} />}
+                <div className="p-4" style={{ height: 'calc(100vh - 210px)', overflowY: 'auto' }}>
+                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} /> : <Post postId={currentPost?._id || null} setCurrentPost={setCurrentPost} />}
                 </div>
             </div>
         </div>

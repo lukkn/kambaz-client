@@ -20,7 +20,7 @@ import { calculateTimeDifference } from "../../../../utils";
 import * as client from "./client";
 import * as enrollmentClient from "../client";
 
-export default function Post({ postId }: { postId: string | null }) {
+export default function Post({ postId, setCurrentPost }: { postId: string | null, setCurrentPost: (post: any) => void }) {
     const [post, setPost] = useState<any>(null);
 
     const fetchPost = async () => {
@@ -34,7 +34,11 @@ export default function Post({ postId }: { postId: string | null }) {
     }
 
     useEffect(() => {
-        fetchPost()
+        if (postId) {
+            fetchPost()
+        } else {
+            setPost(null);
+        }
     }, [postId]);
 
     return (
@@ -65,7 +69,6 @@ export default function Post({ postId }: { postId: string | null }) {
         return (
             <div>
                 <h4 className="fw-bold">Class at a Glance</h4>
-
                 <div className="row row-cols-1 row-cols-lg-2 g-3 mb-4">
                     <div className="col">
                         {stats?.unreadPosts > 0 ?
@@ -123,7 +126,7 @@ export default function Post({ postId }: { postId: string | null }) {
                     <div className="col">
                         <div className="border p-4 rounded-2">
                             <div className="fw-bold mb-2" style={{ fontSize: "1.1rem" }}>Instructor Engagement</div>
-                            <LuApple size={50} className="float-end"/>
+                            <LuApple size={50} className="float-end" />
                             <div className="fs-4 fw-bold">{stats?.instructorResponses}</div>
                             <div className="text-pazza-dark fw-bold mt-1" style={{ fontSize: "0.9rem" }}>Instructor Responses</div>
                         </div>
@@ -131,7 +134,7 @@ export default function Post({ postId }: { postId: string | null }) {
                     <div className="col">
                         <div className="border p-4 rounded-2">
                             <div className="fw-bold mb-2" style={{ fontSize: "1.1rem" }}>Student Participation</div>
-                            <LuUsersRound size={50} className="float-end"/>
+                            <LuUsersRound size={50} className="float-end" />
                             <div className="fs-4 fw-bold">{stats?.studentResponses}</div>
                             <div className="text-pazza-dark fw-bold mt-1" style={{ fontSize: "0.9rem" }}>Student Responses</div>
                         </div>
@@ -147,7 +150,7 @@ export default function Post({ postId }: { postId: string | null }) {
         return (
             <div className="">
                 <div className="mb-4">
-                    <FaArrowLeft className="me-2 text-pazza-primary" size={20} />
+                    <FaArrowLeft className="me-2 text-pazza-primary" size={20} role="button" onClick={() => setCurrentPost(null)} />
                     <CgNotes className="me-2" size={20} />
                     <span className="me-2 fw-bold">{post.type}</span>
                     <span className="text-pazza-dark">@{post._id}</span>

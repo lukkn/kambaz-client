@@ -5,8 +5,6 @@ import { useState } from "react";
 import { Table } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
 
-import Link from "next/link";
-
 import PeopleDetails from "./Details";
 
 export default function PeopleTable({ users = [], fetchUsers }: { users?: any[], fetchUsers?: () => void }) {

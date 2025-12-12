@@ -54,9 +54,9 @@ export default function Posts({
     };
 
     return (
-        <div className="d-flex flex-row pt-3">
+        <div className="d-flex flex-row pt-3" style={{ height: 'calc(100vh - 180px)' }}>
             {isPostsExpanded && (
-                <div className="ps-3" style={{ width: '400px' }}>
+                <div className="ps-3 d-flex flex-column" style={{ height: '100%' }}>
                     <div className="d-flex flex-row gap-2 mb-3">
                         <Button className="w-50 bg-pazza-primary text-white d-flex align-items-center justify-content-center border-0"
                             onClick={() => setNewPost(true)}>
@@ -69,7 +69,7 @@ export default function Posts({
                             <input type="text" placeholder="Search posts..." className="form-control border-0 shadow-none p-0" />
                         </div>
                     </div>
-                    <div className="border rounded-3 h-100">
+                    <div className="border rounded-3 flex-grow-1 d-flex flex-column" style={{ minHeight: 0 }}>
                         <div className="text-pazza-primary">
                             <FiMenu className="m-3" />
                             {folderId ?
@@ -80,7 +80,7 @@ export default function Posts({
                                 : "All Posts"}
                             <BsThreeDotsVertical className="m-3 float-end" />
                         </div>
-                        <div>
+                        <div style={{ overflowY: 'auto', flex: 1, minHeight: 0 }}>
                             {categorizedPosts.pinned.length > 0 && (
                                 <div>
                                     <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('pinned')}>
