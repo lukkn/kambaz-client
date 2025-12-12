@@ -14,12 +14,12 @@ export const createPazzaPost = async (post: any) => {
 };
 
 export const findPazzaPostsByCourse = async (cid: string, role: string, userId: string) => {
-  const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}/${role}/${userId}`);
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}/role/${role}/user/${userId}`);
   return response.data;
 };
 
 export const findCoursePazzaPostByFolder = async (cid: string, fid: string, role: string, userId: string) => {
-  const response = await axiosWithCredentials.get(`${PAZZA_API}/course/${cid}/folder/${fid}/${role}/${userId}`);
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/${cid}/folder/${fid}/role/${role}/user/${userId}`);
   return response.data;
 }
 
@@ -88,5 +88,10 @@ export const createNestedPazzaFollowUp = async (parentId: string, followUp: any)
 
 export const findFollowUpsById = async (fids: string[]) => {
   const response = await axiosWithCredentials.post(`${PAZZA_API}/followup/batch`, fids);
+  return response.data;
+};
+
+export const getPazzaStats = async (cid: string, userId: string) => {
+  const response = await axiosWithCredentials.get(`${PAZZA_API}/stats/${cid}/user/${userId}`);
   return response.data;
 };

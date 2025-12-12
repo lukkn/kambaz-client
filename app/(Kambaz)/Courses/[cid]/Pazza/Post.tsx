@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "next/navigation";
 
 import { FaArrowLeft, FaLink, FaRegBookmark, FaRegStar } from "react-icons/fa6";
+import { LuCircleCheckBig, LuApple, LuUsersRound, LuGraduationCap } from "react-icons/lu";
+import { MdErrorOutline } from "react-icons/md";
+import { TbUserEdit } from "react-icons/tb";
 import { CgNotes } from "react-icons/cg";
 import { BiLike } from "react-icons/bi";
 import { Button } from "react-bootstrap";
@@ -12,10 +16,11 @@ import FollowUps from "./FollowUps";
 import RichTextEditor from "./RichTextEditor";
 
 import { calculateTimeDifference } from "../../../../utils";
+
 import * as client from "./client";
+import * as enrollmentClient from "../client";
 
 export default function Post({ postId }: { postId: string | null }) {
-
     const [post, setPost] = useState<any>(null);
 
     const fetchPost = async () => {
@@ -33,11 +38,112 @@ export default function Post({ postId }: { postId: string | null }) {
     }, [postId]);
 
     return (
-        post ? <PostDetails /> : <div className="text-pazza-dark">Select a post to view its details.</div>
+        post ? <PostDetails /> : <ClassSummary />
     );
 
-    function PostDetails() {
+    function ClassSummary() {
+        const { cid } = useParams();
+        const { currentUser } = useSelector((state: any) => state.accountReducer);
+        const [stats, setStats] = useState<any>(null);
+        const [studentsEnrolled, setStudentsEnrolled] = useState<number>(0);
 
+        const getPazzaStats = async () => {
+            const stats = await client.getPazzaStats(cid as string, currentUser._id);
+            setStats(stats);
+        }
+
+        const fetchStudentsEnrolled = async () => {
+            const enrollments = await enrollmentClient.findUsersForCourse(cid as string);
+            setStudentsEnrolled(enrollments.length);
+        }
+
+        useEffect(() => {
+            getPazzaStats();
+            fetchStudentsEnrolled();
+        }, []);
+
+        return (
+            <div>
+                <h4 className="fw-bold">Class at a Glance</h4>
+
+                <div className="row row-cols-1 row-cols-lg-2 g-3 mb-4">
+                    <div className="col">
+                        {stats?.unreadPosts > 0 ?
+                            <div className="bg-pazza-warning text-pazza-warning-text rounded-3 p-3 bg-pazza-light d-flex flex-row align-items-center justify-content-center gap-3">
+                                <MdErrorOutline size={30} />
+                                <div className="d-flex flex-column justify-content-center align-items-center">
+                                    <div className="fw-bold">Needs Attention</div>
+                                    <div style={{ fontSize: "0.8rem" }}>{stats?.unreadPosts} unread posts</div>
+                                </div>
+                            </div> :
+                            <div className="bg-pazza-success text-pazza-success-text rounded-3 p-3 bg-pazza-light d-flex flex-row align-items-center justify-content-center gap-3">
+                                <LuCircleCheckBig size={30} />
+                                <div className="d-flex flex-column justify-content-center align-items-center">
+                                    <div className="fw-bold">All caught up</div>
+                                    <div>No unread posts</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div className="col">
+                        {stats?.unansweredQuestions > 0 ?
+                            <div className="bg-pazza-warning text-pazza-warning-text rounded-3 p-3 bg-pazza-light d-flex flex-row align-items-center justify-content-center gap-3">
+                                <MdErrorOutline size={30} />
+                                <div className="d-flex flex-column justify-content-center align-items-center">
+                                    <div className="fw-bold">Needs Attention</div>
+                                    <div style={{ fontSize: "0.8rem" }}>{stats?.unansweredQuestions} unanswered questions</div>
+                                </div>
+                            </div> :
+                            <div className="bg-pazza-success text-pazza-success-text rounded-3 p-3 bg-pazza-light d-flex flex-row align-items-center justify-content-center gap-3">
+                                <LuCircleCheckBig size={30} />
+                                <div className="d-flex flex-column justify-content-center align-items-center">
+                                    <div className="fw-bold">All caught up</div>
+                                    <div>No unanswered questions</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div className="row row-cols-1 row-cols-lg-2 g-3">
+                    <div className="col">
+                        <div className="border p-4 rounded-2">
+                            <TbUserEdit size={30} />
+                            <div className="fs-4 fw-bold float-end">{stats?.totalPosts}</div>
+                            <div className="text-pazza-dark fw-bold mt-1" style={{ fontSize: "0.9rem" }}>Total Posts</div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="border p-4 rounded-2">
+                            <LuGraduationCap size={30} />
+                            <div className="fs-4 fw-bold float-end">{studentsEnrolled}</div>
+                            <div className="text-pazza-dark fw-bold mt-1" style={{ fontSize: "0.9rem" }}>Students Enrolled</div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="border p-4 rounded-2">
+                            <div className="fw-bold mb-2" style={{ fontSize: "1.1rem" }}>Instructor Engagement</div>
+                            <LuApple size={50} className="float-end"/>
+                            <div className="fs-4 fw-bold">{stats?.instructorResponses}</div>
+                            <div className="text-pazza-dark fw-bold mt-1" style={{ fontSize: "0.9rem" }}>Instructor Responses</div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="border p-4 rounded-2">
+                            <div className="fw-bold mb-2" style={{ fontSize: "1.1rem" }}>Student Participation</div>
+                            <LuUsersRound size={50} className="float-end"/>
+                            <div className="fs-4 fw-bold">{stats?.studentResponses}</div>
+                            <div className="text-pazza-dark fw-bold mt-1" style={{ fontSize: "0.9rem" }}>Student Responses</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        )
+    }
+
+    function PostDetails() {
         return (
             <div className="">
                 <div className="mb-4">

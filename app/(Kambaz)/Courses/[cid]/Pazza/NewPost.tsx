@@ -12,6 +12,7 @@ import RichTextEditor from "./RichTextEditor";
 
 import * as client from "./client";
 import * as courseClient from "../../client";
+import { read } from "fs";
 
 export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value: boolean) => void, fetchPosts: () => void }) {
 
@@ -79,6 +80,7 @@ export default function NewPost({ setNewPost, fetchPosts }: { setNewPost: (value
         const users = await courseClient.findUsersForCourse(cid as string);
         setUsers(users);
     }
+
 
     useEffect(() => {
         fetchUsers();

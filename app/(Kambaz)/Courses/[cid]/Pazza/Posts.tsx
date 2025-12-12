@@ -8,20 +8,39 @@ import { FaChevronDown, FaChevronRight, FaSquare } from "react-icons/fa6";
 import { LuPin } from "react-icons/lu";
 import { VscTriangleLeft, VscTriangleRight } from "react-icons/vsc";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 
-export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost, setCurrentPost, currentPost, folderId, setFolderId }: { isPostsExpanded: boolean, setIsPostsExpanded: (value: boolean) => void, setNewPost: (value: boolean) => void, setCurrentPost: (post: any) => void, currentPost: any, folderId: string | null, setFolderId: (id: string | null) => void }) {
+import * as client from "./client";
+import { setPosts } from "./reducer";
+
+export default function Posts({
+    isPostsExpanded,
+    setIsPostsExpanded,
+    setNewPost,
+    setCurrentPost,
+    currentPost,
+    folderId,
+    setFolderId,
+}: {
+    isPostsExpanded: boolean,
+    setIsPostsExpanded: (value: boolean) => void,
+    setNewPost: (value: boolean) => void,
+    setCurrentPost: (post: any) => void,
+    currentPost: any,
+    folderId: string | null,
+    setFolderId: (id: string | null) => void
+}) {
 
     const { posts } = useSelector((state: any) => state.pazzaReducer);
     const { folders } = useSelector((state: any) => state.pazzaReducer);
 
     // Categorize posts by date
     const categorizedPosts = categorizePosts(posts || []);
-    
+
     // State for collapsed categories
     const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
-    
+
     const toggleCategory = (category: string) => {
         setCollapsedCategories(prev => {
             const newSet = new Set(prev);
@@ -74,7 +93,7 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                                     ))}
                                 </div>
                             )}
-                            
+
                             {categorizedPosts.today.length > 0 && (
                                 <div>
                                     <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('today')}>
@@ -86,7 +105,7 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                                     ))}
                                 </div>
                             )}
-                            
+
                             {categorizedPosts.yesterday.length > 0 && (
                                 <div>
                                     <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('yesterday')}>
@@ -98,7 +117,7 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                                     ))}
                                 </div>
                             )}
-                            
+
                             {categorizedPosts.lastWeek.length > 0 && (
                                 <div>
                                     <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory('lastWeek')}>
@@ -110,7 +129,7 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
                                     ))}
                                 </div>
                             )}
-                            
+
                             {categorizedPosts.weeks.map((week: any) => (
                                 <div key={week.label}>
                                     <div className="bg-pazza-light border" role="button" onClick={() => toggleCategory(week.label)}>
@@ -137,16 +156,36 @@ export default function Posts({ isPostsExpanded, setIsPostsExpanded, setNewPost,
 }
 
 function PostItem({ post, currentPost, setCurrentPost }: { post: any, currentPost: any, setCurrentPost: (post: any) => void }) {
+
+    const dispatch = useDispatch();
+    const currentUser = useSelector((state: any) => state.accountReducer.currentUser);
+    const postRead = post.readBy?.includes(currentUser._id);
     const truncatedDetails = post.details?.length > 50 ? post.details.substring(0, 50) + '...' : post.details;
-    
+
+    const setRead = async () => {
+        if (!post.readBy?.includes(currentUser._id)) {
+            await client.updatePazzaPost({ ...post, readBy: [...(post.readBy || []), currentUser._id] });
+            const posts = await client.findPazzaPostsByCourse(post.course, currentUser.role, currentUser._id);
+            dispatch(setPosts(posts));
+        }
+    }
+ 
     return (
-        <div className={`p-3 border-bottom ${currentPost?._id === post._id ? "bg-pazza-light" : ""}`} role="button" onClick={() => setCurrentPost(post)} style={currentPost?._id === post._id ? { backgroundColor: '#f0f0f0' } : {}}>
+        <div className={`p-3 border-bottom ${currentPost?._id === post._id ? "bg-pazza-light" : ""}`} role="button"
+            onClick={() => {
+                setCurrentPost(post)
+                setRead();
+            }}
+            style={currentPost?._id === post._id ? { backgroundColor: '#f0f0f0' } : {}}>
             <div className="d-flex align-items-center gap-2 mb-1">
-                {(post.user.role === "FACULTY" || post.user.role === "TA") && <div className="bg-pazza-light p-1 rounded-2"><FaSquare color="#ffc008" className="me-2" />Instr</div>}
-                <div className="fs-6 fw-bold">{post.summary}</div>
+                {(post.user.role === "FACULTY" || post.user.role === "TA") && <div className="bg-pazza-light p-1 rounded-2" style={{}}><FaSquare color="#ffc008" className="me-2" />Instr</div>}
+                <div className="fs-6 fw-bold text-truncate" style={{ width: '200px' }}>{post.summary}</div>
                 <div className="fs-6 ms-auto">{formatDate(post.createdAt)}</div>
             </div>
-            <div className="text-pazza-dark">{truncatedDetails}</div>
+            <div className="d-flex align-items-start justify-content-between">
+                <div className="text-pazza-dark">{truncatedDetails}</div>
+                {!postRead && <div className="bg-pazza-primary text-white rounded-3 px-2 py-1" style={{fontSize: "0.8rem"}}>New</div>}
+            </div>
         </div>
     );
 }
@@ -161,7 +200,7 @@ function getWeekLabel(date: Date) {
     start.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
     const end = new Date(start);
     end.setDate(start.getDate() + 6); // End of week (Saturday)
-    
+
     return `${start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - ${end.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}`;
 }
 
@@ -172,7 +211,7 @@ function categorizePosts(posts: any[]) {
     yesterday.setDate(yesterday.getDate() - 1);
     const lastWeekStart = new Date(today);
     lastWeekStart.setDate(lastWeekStart.getDate() - 7);
-    
+
     const categorized = {
         pinned: [] as any[],
         today: [] as any[],
@@ -180,13 +219,13 @@ function categorizePosts(posts: any[]) {
         lastWeek: [] as any[],
         weeks: [] as any[]
     };
-    
+
     const weekMap = new Map<string, any[]>();
-    
+
     posts.forEach(post => {
         const postDate = new Date(post.createdAt);
         const postDateOnly = new Date(postDate.getFullYear(), postDate.getMonth(), postDate.getDate());
-        
+
         if (post.pinned) {
             categorized.pinned.push(post);
         } else if (postDateOnly.getTime() === today.getTime()) {
@@ -204,7 +243,7 @@ function categorizePosts(posts: any[]) {
             weekMap.get(weekLabel)!.push(post);
         }
     });
-    
+
     // Convert week map to sorted array
     const sortedWeeks = Array.from(weekMap.entries())
         .map(([label, posts]) => ({ label, posts }))
@@ -214,8 +253,8 @@ function categorizePosts(posts: any[]) {
             const dateB = new Date(b.posts[0].createdAt);
             return dateB.getTime() - dateA.getTime();
         });
-    
+
     categorized.weeks = sortedWeeks;
-    
+
     return categorized;
 }
