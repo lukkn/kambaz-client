@@ -35,8 +35,19 @@ export default function Posts({
     const { posts } = useSelector((state: any) => state.pazzaReducer);
     const { folders } = useSelector((state: any) => state.pazzaReducer);
 
-    // Categorize posts by date
-    const categorizedPosts = categorizePosts(posts || []);
+    // Search state
+    const [search, setSearch] = useState("");
+    // Filter posts by search input (case-insensitive)
+    const filteredPosts = (posts || []).filter((post: any) => {
+        if (!search) return true;
+        const searchLower = search.toLowerCase();
+        return (
+            (post.summary && post.summary.toLowerCase().includes(searchLower)) ||
+            (post.details && post.details.toLowerCase().includes(searchLower))
+        );
+    });
+    // Categorize filtered posts by date
+    const categorizedPosts = categorizePosts(filteredPosts);
 
     // State for collapsed categories
     const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
@@ -66,7 +77,13 @@ export default function Posts({
 
                         <div className="d-flex align-items-center justify-content-center gap-2 border px-2 rounded-3">
                             <IoSearch />
-                            <input type="text" placeholder="Search posts..." className="form-control border-0 shadow-none p-0" />
+                            <input
+                                type="text"
+                                placeholder="Search posts..."
+                                className="form-control border-0 shadow-none p-0"
+                                value={search}
+                                onChange={e => setSearch(e.target.value)}
+                            />
                         </div>
                     </div>
                     <div className="border rounded-3 flex-grow-1 d-flex flex-column" style={{ minHeight: 0 }}>
