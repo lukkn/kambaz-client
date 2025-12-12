@@ -55,7 +55,6 @@ export default function Pazza() {
 
     useEffect(() => {
         if (currentPost) setNewPost(false);
-        console.log("Current Post changed:", currentPost);
     }, [currentPost]);
 
     return (
@@ -64,7 +63,7 @@ export default function Pazza() {
             <div className="flex-grow-1">
                 <Folders folderId={folderId} setFolderId={setFolderId} />
                 <div className="p-4" style={{ height: 'calc(100vh - 210px)', overflowY: 'auto' }}>
-                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} setCurrentPost={setCurrentPost} /> : <Post postId={currentPost?._id || null} setCurrentPost={setCurrentPost} />}
+                    {newPost ? <NewPost setNewPost={setNewPost} fetchPosts={fetchPosts} setCurrentPost={setCurrentPost} /> : <Post postId={currentPost?._id || null} setCurrentPost={setCurrentPost} fetchPosts={fetchPosts}/>}
                 </div>
             </div>
         </div>

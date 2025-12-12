@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 
 import { FaArrowLeft, FaLink, FaRegBookmark, FaRegStar } from "react-icons/fa6";
 import { LuCircleCheckBig, LuApple, LuUsersRound, LuGraduationCap } from "react-icons/lu";
+import { VscTriangleDown } from "react-icons/vsc";
 import { MdErrorOutline } from "react-icons/md";
 import { TbUserEdit } from "react-icons/tb";
 import { CgNotes } from "react-icons/cg";
@@ -20,7 +21,7 @@ import { calculateTimeDifference } from "../../../../utils";
 import * as client from "./client";
 import * as enrollmentClient from "../client";
 
-export default function Post({ postId, setCurrentPost }: { postId: string | null, setCurrentPost: (post: any) => void }) {
+export default function Post({ postId, setCurrentPost, fetchPosts }: { postId: string | null, setCurrentPost: (post: any) => void, fetchPosts: () => void }) {
     const [post, setPost] = useState<any>(null);
 
     const fetchPost = async () => {
@@ -147,36 +148,103 @@ export default function Post({ postId, setCurrentPost }: { postId: string | null
     }
 
     function PostDetails() {
+        const [showActions, setShowActions] = useState(false);
+        const [editMode, setEditMode] = useState(false);
+
+        const handleDeletePost = async () => {
+            await client.deletePazzaPost(post._id);
+            fetchPosts();
+            setCurrentPost(null);
+        };
+
+        const [editSummary, setEditSummary] = useState(post.summary);
+        const [editDetails, setEditDetails] = useState(post.details);
+        const [saving, setSaving] = useState(false);
+
+        const handleSaveEdit = async () => {
+            setSaving(true);
+            await client.updatePazzaPost({
+                ...post,
+                summary: editSummary,
+                details: editDetails,
+            });
+            setEditMode(false);
+            setSaving(false);
+            fetchPost();
+        };
+
+        const handleCancelEdit = () => {
+            setEditSummary(post.summary);
+            setEditDetails(post.details);
+            setEditMode(false);
+        };
+
+        const { currentUser } = useSelector((state: any) => state.accountReducer);
+        const isInstructor = ["FACULTY", "TA"].includes(currentUser?.role);
+        const isOwner = post.user?._id === currentUser?._id;
         return (
             <div className="">
-                <div className="mb-4">
-                    <FaArrowLeft className="me-2 text-pazza-primary" size={20} role="button" onClick={() => setCurrentPost(null)} />
-                    <CgNotes className="me-2" size={20} />
-                    <span className="me-2 fw-bold">{post.type}</span>
-                    <span className="text-pazza-dark">@{post._id}</span>
+                <div className="mb-4 d-flex align-items-center justify-content-between">
+                    <div>
+                        <FaArrowLeft className="me-2 text-pazza-primary" size={20} role="button" onClick={() => setCurrentPost(null)} />
+                        <CgNotes className="me-2" size={20} />
+                        <span className="me-2 fw-bold">{post.type}</span>
+                        <span className="text-pazza-dark">@{post._id}</span>
+                    </div>
+                    {(isInstructor || isOwner) && (
+                        <div className="position-relative">
+                            <Button variant="light" className="border" onClick={() => setShowActions(!showActions)}>
+                                Actions <VscTriangleDown className="ms-2" />
+                            </Button>
+                            <div className={`position-absolute bg-white rounded-2 mt-2 px-4 py-2 d-flex flex-column gap-2 end-0 ${showActions ? "" : "d-none"}`} onMouseLeave={() => setShowActions(false)} style={{zIndex: 10}}>
+                                <div role="button" onClick={() => { setEditMode(true); setShowActions(false); }}>Edit</div>
+                                <div role="button" className="text-danger" onClick={handleDeletePost}>Delete</div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-                <h2>{post.summary}</h2>
-                <p className="text-pazza-dark">Updated {calculateTimeDifference(post.updatedAt)} by {post.user.firstName} {post.user.lastName}</p>
-                <div dangerouslySetInnerHTML={{ __html: post.details || '' }} />
-                <div className="wd-tags d-flex flex-wrap gap-2 mb-4">
-                    {post.folders?.map((folder: any, index: number) => (
-                        <div key={folder._id} className="bg-pazza-accent text-pazza-primary py-1 px-2 rounded-2" style={{ width: "fit-content" }}>{folder.name}</div>
-                    ))}
-                </div>
+                {editMode ? (
+                    <>
+                        <input
+                            type="text"
+                            className="form-control mb-3"
+                            value={editSummary}
+                            onChange={e => setEditSummary(e.target.value)}
+                            placeholder="Edit summary"
+                            maxLength={100}
+                        />
+                        <RichTextEditor value={editDetails} onChange={setEditDetails} placeholder="Edit details..." />
+                        <div className="d-flex gap-2 mt-3">
+                            <Button className="bg-pazza-primary text-white border-0" onClick={handleSaveEdit} disabled={saving}>{saving ? "Saving..." : "Save"}</Button>
+                            <Button variant="secondary" onClick={handleCancelEdit} disabled={saving}>Cancel</Button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <h2>{post.summary}</h2>
+                        <p className="text-pazza-dark">Updated {calculateTimeDifference(post.updatedAt)} by {post.user.firstName} {post.user.lastName}</p>
+                        <div dangerouslySetInnerHTML={{ __html: post.details || '' }} />
+                        <div className="wd-tags d-flex flex-wrap gap-2 mb-4">
+                            {post.folders?.map((folder: any, index: number) => (
+                                <div key={folder._id} className="bg-pazza-accent text-pazza-primary py-1 px-2 rounded-2" style={{ width: "fit-content" }}>{folder.name}</div>
+                            ))}
+                        </div>
 
-                <div className="text-pazza-primary m-2 py-2">
-                    <BiLike className="me-1" size={30} /> <span className="me-4">0</span>
-                    <FaRegBookmark className="me-4" size={30} />
-                    <FaRegStar className="me-4" size={30} />
-                    <FaLink className="me-4" size={30} />
-                    <span className="float-end">{post.views || 0} views</span>
-                </div>
+                        <div className="text-pazza-primary m-2 py-2">
+                            <BiLike className="me-1" size={30} /> <span className="me-4">0</span>
+                            <FaRegBookmark className="me-4" size={30} />
+                            <FaRegStar className="me-4" size={30} />
+                            <FaLink className="me-4" size={30} />
+                            <span className="float-end">{post.views || 0} views</span>
+                        </div>
 
-                {
-                    post.type === "QUESTION" && <Answer />
-                }
+                        {
+                            post.type === "QUESTION" && <Answer />
+                        }
 
-                <FollowUps postId={post._id} />
+                        <FollowUps postId={post._id} />
+                    </>
+                )}
             </div>
         )
     }

@@ -45,7 +45,6 @@ export const findPazzaFoldersByCourse = async (cid: string) => {
 
 export const createPazzaFolder = async (cid: string, folderName: string) => {
   const folder = { course: cid, name: folderName };
-  console.log("Creating folder:", folder);
   const response = await axiosWithCredentials.post(PAZZA_FOLDERS_API, folder);
   return response.data;
 };
